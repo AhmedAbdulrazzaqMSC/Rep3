@@ -48,10 +48,16 @@
       "Youssef Stitou": "yst123"
     };
 
-    const jobData = [];
-    fetch("jobs_full.json")
-      .then(res => res.json())
-      .then(data => jobData.push(...data));
+    const jobData = [
+      {"job_description": "Power Plug (Complete) Male - Replace", "job_code": "A001A", "part_number": "22-02378-00PK10", "part_description": "Plug, Power", "labour_hours": 0.5},
+      {"job_description": "Cable, 460 V  - Replace", "job_code": "A002A", "part_number": "22-66654-20", "part_description": "Cable MSC ContainerFlex FG7OK 4G4 11awg (per meter)", "labour_hours": 0.5},
+      {"job_description": "Humidity Sensor  - Replace", "job_code": "A037A", "part_number": "76-66694-00", "part_description": "Sensor, Humidity W/Bracket  (HS)", "labour_hours": 1.25},
+      {"job_description": "Evaporator access panel   - Remove and refit", "job_code": "B082E", "part_number": "N/A", "part_description": "N/A", "labour_hours": 0.25},
+      {"job_description": "Cable, 460 V  - Splice", "job_code": "A002X", "part_number": "22-50463-00PK5", "part_description": "SPLICE KIT FAST III", "labour_hours": 0.5},
+      {"job_description": "Condenser fan motor capacitor - Replace", "job_code": "A005A", "part_number": "22-50088-00", "part_description": "Capacitor, EF, 20uF (High Speed)", "labour_hours": 1.5},
+      {"job_description": "Service Fee", "job_code": "F003U", "part_number": "N/A", "part_description": "N/A", "labour_hours": 0.75},
+      {"job_description": "Controller  - Replace", "job_code": "A018A", "part_number": "12-56012", "part_description": "Controller ML3, Green Label, Repaired", "labour_hours": 1.0}
+    ];
 
     function handleJobSelect(inputEl, index) {
       const selected = inputEl.value;
@@ -100,6 +106,14 @@
         <input type="hidden" id="labour_${index}">
       `;
       container.appendChild(fieldset);
+    }
+
+    function addAlarm() {
+      const container = document.getElementById("alarmSection");
+      const input = document.createElement("input");
+      input.type = "text";
+      input.name = "alarm" + (container.children.length + 1);
+      container.appendChild(input);
     }
 
     function logout() {
@@ -156,11 +170,13 @@
       <label>RETURN NA</label><input type="number">
 
       <div class="section-title">Photos</div>
-      <input type="file" name="photo_before">
-      <input type="file" name="photo_after">
+      <label>Photos Before</label><input type="file" name="photo_before">
+      <label>Photos After</label><input type="file" name="photo_after">
 
       <div class="section-title">Alarms</div>
-      <input type="text" name="alarm_1">
+      <div id="alarmSection" class="full-width">
+        <input type="text" name="alarm_1">
+      </div>
       <button type="button" onclick="addAlarm()">Add Alarm</button>
 
       <div class="section-title">Jobs</div>
