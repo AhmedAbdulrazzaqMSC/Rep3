@@ -37,14 +37,6 @@
     #logout { float: right; margin-bottom: 10px; }
   </style>
   <script>
-    let jobData = [];
-
-    async function loadJobs() {
-      const response = await fetch('https://ahmedabdulrazzaqmsc.github.io/rep/jobData_full.js');
-      if (!response.ok) return;
-      jobData = await response.json();
-    }
-
     const USERS = {
       "Admin": "admin123",
       "Brahim Moukafih": "bm123",
@@ -56,61 +48,40 @@
       "Youssef Stitou": "yst123"
     };
 
-    function handleJobSelect(inputEl, index) {
-      const selected = inputEl.value;
-      const match = jobData.find(job => job.job_description === selected);
-      document.getElementById("jobCode_" + index).value = match?.job_code || '';
-      document.getElementById("partNumber_" + index).value = match?.part_number || '';
-      document.getElementById("partDesc_" + index).value = match?.part_description || '';
-      document.getElementById("labour_" + index).value = match?.labour_hours || '';
-    }
+    const jobData = [
+      { job_description: "Fan - Replace", job_code: "A011A", part_number: "38-00557-00", part_description: "Fan, Evaporator", labour_hours: 0.5 },
+      { job_description: "Controller - Replace", job_code: "A018A", part_number: "12-56012", part_description: "Controller ML3, Green Label, Repaired", labour_hours: 1.0 },
+      { job_description: "Humidity Sensor - Replace", job_code: "A037A", part_number: "76-66694-00", part_description: "Sensor, Humidity W/Bracket (HS)", labour_hours: 1.25 }
+    ];
 
-    function validateLogin() {
-      const name = document.getElementById("username").value;
-      const pass = document.getElementById("password").value;
-      if (USERS[name] === pass) {
+    function doLogin() {
+      const name = document.getElementById("techLoginName").value.trim();
+      const pass = document.getElementById("techPassword").value.trim();
+      if (USERS[name] && USERS[name] === pass) {
         sessionStorage.setItem("technicianName", name);
-        location.reload();
+        loadTechnician();
       } else {
-        alert("Invalid credentials");
+        alert("Invalid name or password.");
       }
     }
 
-    function addJob() {
-      const container = document.getElementById("jobContainer");
-      const index = container.children.length + 1;
-      const datalistId = "jobList_" + index;
-      const options = jobData.map(j => `<option value="${j.job_description}">`).join("");
-      const fieldset = document.createElement("fieldset");
-
-      fieldset.innerHTML = `
-        <legend>Job ${index}</legend>
-        <label>Job Description</label>
-        <input type="text" list="${datalistId}" oninput="handleJobSelect(this, ${index})">
-        <datalist id="${datalistId}">${options}</datalist>
-        <label>Job Code</label>
-        <input type="text" id="jobCode_${index}" class="readonly" readonly>
-        <label>Part Number</label>
-        <input type="text" id="partNumber_${index}" class="readonly" readonly>
-        <label>Part Description</label>
-        <input type="text" id="partDesc_${index}" class="readonly" readonly>
-        <label>Old Part Serial</label>
-        <input type="text" name="old_serial_${index}">
-        <label>New Part Serial</label>
-        <input type="text" name="new_serial_${index}">
-        <label>Quantity</label>
-        <input type="text" name="quantity_${index}">
-        <input type="hidden" id="labour_${index}">
-      `;
-      container.appendChild(fieldset);
+    function loadTechnician() {
+      const name = sessionStorage.getItem("technicianName");
+      if (name) {
+        document.getElementById("naam").value = name;
+        document.getElementById("loginSection").style.display = "none";
+        document.getElementById("formSection").style.display = "block";
+        addJob();
+        addAlarm();
+      } else {
+        document.getElementById("loginSection").style.display = "block";
+        document.getElementById("formSection").style.display = "none";
+      }
     }
 
-    function addAlarm() {
-      const container = document.getElementById("alarmSection");
-      const input = document.createElement("input");
-      input.type = "text";
-      input.name = "alarm" + (container.children.length + 1);
-      container.appendChild(input);
+    function logout() {
+      sessionStorage.removeItem("technicianName");
+      location.reload();
     }
 
     function addPhoto(sectionId) {
@@ -121,62 +92,117 @@
       container.appendChild(input);
     }
 
-    function logout() {
-      sessionStorage.removeItem("technicianName");
-      location.reload();
+    function addAlarm() {
+      const container = document.getElementById("alarmContainer");
+      const input = document.createElement("input");
+      input.type = "text";
+      input.name = "alarm";
+      input.placeholder = "Alarm";
+      container.appendChild(input);
     }
 
-    window.onload = async function () {
-      await loadJobs();
-      const tech = sessionStorage.getItem("technicianName");
-      if (!tech) {
-        document.getElementById("loginSection").style.display = "block";
-        document.getElementById("formSection").style.display = "none";
-      } else {
-        document.getElementById("loginSection").style.display = "none";
-        document.getElementById("formSection").style.display = "block";
-        document.getElementById("naam").value = tech;
-      }
-      addJob();
+    function addJob() {
+      const container = document.getElementById("jobContainer");
+      const index = container.children.length + 1;
+      const datalistId = "jobList_" + index;
+      const fieldset = document.createElement("fieldset");
+      const options = jobData.map(j => `<option value="${j.job_description}">`).join("");
+
+      fieldset.innerHTML = `
+        <legend>Job ${index}</legend>
+        <label>Job Description</label>
+        <input type="text" list="${datalistId}" oninput="handleJobSelect(this, ${index})" placeholder="Start typing...">
+        <datalist id="${datalistId}">${options}</datalist>
+        <label>Job Code</label>
+        <input type="text" id="jobCode_${index}" class="readonly" readonly>
+        <label>Part Number</label>
+        <input type="text" id="partNumber_${index}" class="readonly" readonly>
+        <label>Part Description</label>
+        <input type="text" id="partDesc_${index}" class="readonly" readonly>
+        <label>Quantity</label>
+        <input type="text" name="quantity_${index}">
+        <label>Old Serial Number</label>
+        <input type="text" name="serial_old_${index}">
+        <label>New Serial Number</label>
+        <input type="text" name="serial_new_${index}">
+        <input type="hidden" id="labour_${index}">
+      `;
+
+      container.appendChild(fieldset);
     }
+
+    function handleJobSelect(inputEl, index) {
+      const selected = inputEl.value;
+      const match = jobData.find(job => job.job_description === selected);
+      document.getElementById("jobCode_" + index).value = match?.job_code || '';
+      document.getElementById("partNumber_" + index).value = match?.part_number || '';
+      document.getElementById("partDesc_" + index).value = match?.part_description || '';
+      document.getElementById("labour_" + index).value = match?.labour_hours || '';
+    }
+
+    window.onload = function () {
+      loadTechnician();
+    };
   </script>
 </head>
 <body>
-  <div id="loginSection">
-    <label>Username:</label>
-    <input type="text" id="username">
-    <label>Password:</label>
-    <input type="password" id="password">
-    <button onclick="validateLogin()">Login</button>
-  </div>
+<div id="loginSection">
+  <h2>Technician Login</h2>
+  <label>Technician Name:</label>
+  <input type="text" id="techLoginName">
+  <label>Password:</label>
+  <input type="password" id="techPassword">
+  <button onclick="doLogin()">Login</button>
+</div>
+<div id="formSection" style="display:none;">
+  <button id="logout" onclick="logout()">Logout</button>
+  <h2>Technician Repair Form</h2>
+  <form id="repairForm">
+    <label>CONTAINERNR</label><input type="text" name="containernr">
+    <label>DATUM (Date)</label><input type="date" name="datum">
+    <label>NAAM (Technician Name)</label><input type="text" id="naam" name="naam">
+    <label>MODEL</label><input type="text" name="model">
+    <label>DATUM IN DIENST</label><input type="text" name="datum_in_dienst">
+    <label>SERIENR.</label><input type="text" name="serienr">
+    <label>WARRANTY ID NR</label><input type="text" name="warranty_id">
+    <label>DATUM IN SERVICE</label><input type="text" name="datum_in_service">
+    <label>GARANTIE</label><input type="text" name="garantie">
+    <label>AANTAL MAANDEN GARANTIE</label><input type="text" name="aantal_maanden">
+    <label>SETPOINT °C</label><input type="number" name="setpoint">
+    <label>VENTS</label><input type="text" name="vents">
+    <label>HUM</label><input type="text" name="hum">
+    <label>AMBIENT</label><input type="text" name="ambient">
+    <label>SUPPLY VOOR</label><input type="text" name="supply_voor">
+    <label>SUPPLY NA</label><input type="number" name="supply_na">
+    <label>RETURN VOOR</label><input type="text" name="return_voor">
+    <label>RETURN NA</label><input type="number" name="return_na">
 
-  <div id="formSection" style="display:none">
-    <button id="logout" onclick="logout()">Logout</button>
-    <form>
-      <label for="naam">Technician</label>
-      <input type="text" id="naam" readonly>
+    <div class="section-title">Photos</div>
+    <div id="fotos_voor">
+      <label>Fotos VOOR</label>
+      <input type="file" name="fotos_voor">
+    </div>
+    <button type="button" onclick="addPhoto('fotos_voor')">Add More Before Photos</button>
 
-      <div class="section-title">Photos</div>
-      <div id="fotos_voor">
-        <label>Before Repair</label>
-        <input type="file" name="before_photo">
-      </div>
-      <button type="button" onclick="addPhoto('fotos_voor')">Add Before Photo</button>
+    <div id="fotos_na">
+      <label>Fotos NA</label>
+      <input type="file" name="fotos_na">
+    </div>
+    <button type="button" onclick="addPhoto('fotos_na')">Add More After Photos</button>
 
-      <div id="fotos_na">
-        <label>After Repair</label>
-        <input type="file" name="after_photo">
-      </div>
-      <button type="button" onclick="addPhoto('fotos_na')">Add After Photo</button>
+    <div class="section-title">Alarms</div>
+    <div class="full-width" id="alarmContainer"></div>
+    <button type="button" onclick="addAlarm()">Add Alarm</button>
 
-      <div class="section-title">Alarms</div>
-      <div id="alarmSection"></div>
-      <button type="button" onclick="addAlarm()">Add Alarm</button>
+    <div class="section-title">Job Tasks</div>
+    <div class="full-width" id="jobContainer"></div>
+    <button type="button" onclick="addJob()">Add Job</button>
 
-      <div class="section-title">Jobs</div>
-      <div id="jobContainer"></div>
-      <button type="button" onclick="addJob()">Add Job</button>
-    </form>
-  </div>
+    <label>TEMPERATUUR IN-RANGE NA REPAIR</label><input type="text" name="temp_in_range">
+    <label class="full-width">OMSCHRIJVING / PROBLEEM</label><textarea name="probleem" rows="3" class="full-width"></textarea>
+    <label class="full-width">OPMERKINGEN</label><textarea name="opmerkingen" rows="3" class="full-width"></textarea>
+    <button type="submit" class="full-width">Submit Report</button>
+  </form>
+</div>
 </body>
 </html>
