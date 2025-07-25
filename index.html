@@ -13,10 +13,13 @@
       gap: 20px;
     }
     label { font-weight: bold; }
-    input, select, textarea {
+    input, select, textarea, button {
       padding: 8px;
       width: 100%;
       box-sizing: border-box;
+    }
+    button:not(.full-width) {
+      width: auto;
     }
     .full-width { grid-column: 1 / 3; }
     fieldset {
@@ -32,11 +35,10 @@
       border-bottom: 1px solid #ddd;
       padding-bottom: 5px;
     }
-    button { padding: 10px; }
+    #logout { float: right; margin-bottom: 10px; }
   </style>
   <script>
-    const jobData = 
-[
+    const jobData = [
   {
     "job_description": "Power Plug (Complete) Male - Replace",
     "job_code": "A001A",
@@ -318,151 +320,194 @@
     "labour_hours": 0.5
   }
 ];
+
+    function addJob() {
+      const container = document.getElementById("jobContainer");
+      const index = container.children.length + 1;
+      const fieldset = document.createElement("fieldset");
+      const datalistId = "jobList_" + index;
+      const options = jobData.map(j => `<option value="${j.job_description}">`).join("");
+
+      fieldset.innerHTML = `
+        <legend>Job ${index}</legend>
+        <label>Job Description</label>
+        <input type="text" list="${datalistId}" oninput="handleJobSelect(this, ${index})" placeholder="Start typing...">
+        <datalist id="${datalistId}">
+          ${options}
+        </datalist>
+        <label>Job Code</label>
+        <input type="text" id="jobCode_${index}" class="readonly" readonly>
+        <label>Part Number</label>
+        <input type="text" id="partNumber_${index}" class="readonly" readonly>
+        <label>Part Description</label>
+        <input type="text" id="partDesc_${index}" class="readonly" readonly>
+        <input type="hidden" id="labour_${index}">
+      `;
+      container.appendChild(fieldset);
+    }
+
+    function handleJobSelect(inputEl, index) {
+      const selected = inputEl.value;
+      const match = jobData.find(job => job.job_description === selected);
+      document.getElementById("jobCode_" + index).value = match?.job_code || '';
+      document.getElementById("partNumber_" + index).value = match?.part_number || '';
+      document.getElementById("partDesc_" + index).value = match?.part_description || '';
+      document.getElementById("labour_" + index).value = match?.labour_hours || '';
+    }
+
+    function addAlarm() {
+      const container = document.getElementById("alarmContainer");
+      const index = container.children.length + 1;
+      const input = document.createElement("input");
+      input.type = "text";
+      input.name = "alarm_" + index;
+      input.placeholder = "Alarm " + index;
+      container.appendChild(input);
+    }
+
+    function addPhoto(sectionId) {
+      const container = document.getElementById(sectionId);
+      const input = document.createElement("input");
+      input.type = "file";
+      input.name = sectionId + "_extra";
+      container.appendChild(input);
+    }
+
+    function loadTechnician() {
+      const name = sessionStorage.getItem("technicianName");
+      if (name) {
+        document.getElementById("naam").value = name;
+        document.getElementById("loginSection").style.display = "none";
+        document.getElementById("formSection").style.display = "block";
+      } else {
+        document.getElementById("loginSection").style.display = "block";
+        document.getElementById("formSection").style.display = "none";
+      }
+    }
+
+    function doLogin() {
+      const name = document.getElementById("techLoginName").value.trim();
+      if (name) {
+        sessionStorage.setItem("technicianName", name);
+        loadTechnician();
+      }
+    }
+
+    function logout() {
+      sessionStorage.removeItem("technicianName");
+      location.reload();
+    }
+
+    window.onload = function() {
+      loadTechnician();
+      addJob();
+      addAlarm();
+    };
   </script>
 </head>
 <body>
 
-<h2>Technician Repair Form</h2>
+<div id="loginSection">
+  <h2>Technician Login</h2>
+  <label>Enter Your Name:</label>
+  <input type="text" id="techLoginName">
+  <button onclick="doLogin()">Login</button>
+</div>
 
-<form id="repairForm">
+<div id="formSection" style="display:none;">
+  <button id="logout" onclick="logout()">Logout</button>
+  <h2>Technician Repair Form</h2>
+  <form id="repairForm">
 
-  <label for="containernr">CONTAINERNR</label>
-  <input type="text" id="containernr" name="containernr">
+    <label for="containernr">CONTAINERNR</label>
+    <input type="text" id="containernr" name="containernr">
 
-  <label for="datum">DATUM (Date)</label>
-  <input type="date" id="datum" name="datum">
+    <label for="datum">DATUM (Date)</label>
+    <input type="date" id="datum" name="datum">
 
-  <label for="naam">NAAM (Technician Name)</label>
-  <input type="text" id="naam" name="naam">
+    <label for="naam">NAAM (Technician Name)</label>
+    <input type="text" id="naam" name="naam">
 
-  <label for="model">MODEL</label>
-  <input type="text" id="model" name="model">
+    <label for="model">MODEL</label>
+    <input type="text" id="model" name="model">
 
-  <label for="datum_in_dienst">DATUM IN DIENST</label>
-  <input type="text" id="datum_in_dienst" name="datum_in_dienst">
+    <label for="datum_in_dienst">DATUM IN DIENST</label>
+    <input type="text" id="datum_in_dienst" name="datum_in_dienst">
 
-  <label for="serienr">SERIENR.</label>
-  <input type="text" id="serienr" name="serienr">
+    <label for="serienr">SERIENR.</label>
+    <input type="text" id="serienr" name="serienr">
 
-  <label for="warranty_id">WARRANTY ID NR</label>
-  <input type="text" id="warranty_id" name="warranty_id">
+    <label for="warranty_id">WARRANTY ID NR</label>
+    <input type="text" id="warranty_id" name="warranty_id">
 
-  <label for="datum_in_service">DATUM IN SERVICE</label>
-  <input type="text" id="datum_in_service" name="datum_in_service">
+    <label for="datum_in_service">DATUM IN SERVICE</label>
+    <input type="text" id="datum_in_service" name="datum_in_service">
 
-  <label for="garantie">GARANTIE</label>
-  <input type="text" id="garantie" name="garantie">
+    <label for="garantie">GARANTIE</label>
+    <input type="text" id="garantie" name="garantie">
 
-  <label for="aantal_maanden">AANTAL MAANDEN GARANTIE</label>
-  <input type="text" id="aantal_maanden" name="aantal_maanden">
+    <label for="aantal_maanden">AANTAL MAANDEN GARANTIE</label>
+    <input type="text" id="aantal_maanden" name="aantal_maanden">
 
-  <div class="section-title">Temperature Diagnostics</div>
+    <div class="section-title">Temperature Diagnostics</div>
 
-  <label for="setpoint">SETPOINT °C</label>
-  <input type="number" id="setpoint" name="setpoint">
+    <label for="setpoint">SETPOINT °C</label>
+    <input type="number" id="setpoint" name="setpoint">
 
-  <label for="vents">VENTS</label>
-  <input type="text" id="vents" name="vents">
+    <label for="vents">VENTS</label>
+    <input type="text" id="vents" name="vents">
 
-  <label for="hum">HUM</label>
-  <input type="text" id="hum" name="hum">
+    <label for="hum">HUM</label>
+    <input type="text" id="hum" name="hum">
 
-  <label for="ambient">AMBIENT</label>
-  <input type="text" id="ambient" name="ambient">
+    <label for="ambient">AMBIENT</label>
+    <input type="text" id="ambient" name="ambient">
 
-  <label for="supply_voor">SUPPLY VOOR</label>
-  <input type="text" id="supply_voor" name="supply_voor">
+    <label for="supply_voor">SUPPLY VOOR</label>
+    <input type="text" id="supply_voor" name="supply_voor">
 
-  <label for="supply_na">SUPPLY NA</label>
-  <input type="number" id="supply_na" name="supply_na">
+    <label for="supply_na">SUPPLY NA</label>
+    <input type="number" id="supply_na" name="supply_na">
 
-  <label for="return_voor">RETURN VOOR</label>
-  <input type="text" id="return_voor" name="return_voor">
+    <label for="return_voor">RETURN VOOR</label>
+    <input type="text" id="return_voor" name="return_voor">
 
-  <label for="return_na">RETURN NA</label>
-  <input type="number" id="return_na" name="return_na">
+    <label for="return_na">RETURN NA</label>
+    <input type="number" id="return_na" name="return_na">
 
-  <div class="section-title">Photos</div>
+    <div class="section-title">Photos</div>
+    <div id="fotos_voor">
+      <label>Fotos VOOR</label>
+      <input type="file" name="fotos_voor">
+    </div>
+    <button type="button" onclick="addPhoto('fotos_voor')">Add More Before Photos</button>
 
-  <label for="fotos_voor">Fotos VOOR</label>
-  <input type="file" id="fotos_voor" name="fotos_voor" multiple>
+    <div id="fotos_na">
+      <label>Fotos NA</label>
+      <input type="file" name="fotos_na">
+    </div>
+    <button type="button" onclick="addPhoto('fotos_na')">Add More After Photos</button>
 
-  <label for="fotos_na">Fotos NA</label>
-  <input type="file" id="fotos_na" name="fotos_na" multiple>
+    <div class="section-title">Alarms</div>
+    <div class="full-width" id="alarmContainer"></div>
+    <button type="button" onclick="addAlarm()">Add Alarm</button>
 
-  <div class="section-title">Alarms</div>
+    <div class="section-title">Job Tasks</div>
+    <div class="full-width" id="jobContainer"></div>
+    <button type="button" onclick="addJob()">Add Job</button>
 
-  <div class="full-width" id="alarmContainer"></div>
-  <button type="button" onclick="addAlarm()">Add Alarm</button>
+    <label for="temp_in_range">TEMPERATUUR IN-RANGE NA REPAIR</label>
+    <input type="text" id="temp_in_range" name="temp_in_range">
 
-  <div class="section-title">Job Tasks</div>
+    <label for="probleem" class="full-width">OMSCHRIJVING / PROBLEEM</label>
+    <textarea id="probleem" name="probleem" rows="3" class="full-width"></textarea>
 
-  <div class="full-width" id="jobContainer"></div>
-  <button type="button" onclick="addJob()">Add Job</button>
+    <label for="opmerkingen" class="full-width">OPMERKINGEN</label>
+    <textarea id="opmerkingen" name="opmerkingen" rows="3" class="full-width"></textarea>
 
-  <label for="temp_in_range">TEMPERATUUR IN-RANGE NA REPAIR</label>
-  <input type="text" id="temp_in_range" name="temp_in_range">
-
-  <label for="probleem" class="full-width">OMSCHRIJVING / PROBLEEM</label>
-  <textarea id="probleem" name="probleem" rows="3" class="full-width"></textarea>
-
-  <label for="opmerkingen" class="full-width">OPMERKINGEN</label>
-  <textarea id="opmerkingen" name="opmerkingen" rows="3" class="full-width"></textarea>
-
-  <button type="submit" class="full-width">Submit Report</button>
-</form>
-
-<script>
-function addJob() {
-  const container = document.getElementById("jobContainer");
-  const index = container.children.length + 1;
-  const fieldset = document.createElement("fieldset");
-  const datalistId = "jobList_" + index;
-  const options = jobData.map(j => `<option value="${j.job_description}">`).join("");
-
-  fieldset.innerHTML = `
-    <legend>Job ${index}</legend>
-    <label>Job Description</label>
-    <input type="text" list="${datalistId}" oninput="handleJobSelect(this, ${index})" placeholder="Start typing...">
-    <datalist id="${datalistId}">
-      ${options}
-    </datalist>
-    <label>Job Code</label>
-    <input type="text" id="jobCode_${index}" class="readonly" readonly>
-    <label>Part Number</label>
-    <input type="text" id="partNumber_${index}" class="readonly" readonly>
-    <label>Part Description</label>
-    <input type="text" id="partDesc_${index}" class="readonly" readonly>
-    <input type="hidden" id="labour_${index}">
-  `;
-  container.appendChild(fieldset);
-}
-
-function handleJobSelect(inputEl, index) {
-  const selected = inputEl.value;
-  const match = jobData.find(job => job.job_description === selected);
-
-  document.getElementById("jobCode_" + index).value = match?.job_code || '';
-  document.getElementById("partNumber_" + index).value = match?.part_number || '';
-  document.getElementById("partDesc_" + index).value = match?.part_description || '';
-  document.getElementById("labour_" + index).value = match?.labour_hours || '';
-}
-
-function addAlarm() {
-  const container = document.getElementById("alarmContainer");
-  const index = container.children.length + 1;
-  const input = document.createElement("input");
-  input.type = "text";
-  input.name = "alarm_" + index;
-  input.placeholder = "Alarm " + index;
-  container.appendChild(input);
-}
-
-window.onload = () => {
-  addJob();
-  addAlarm();
-};
-</script>
+    <button type="submit" class="full-width">Submit Report</button>
+  </form>
+</div>
 
 </body>
 </html>
