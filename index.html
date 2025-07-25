@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <title>Technician Repair Form</title>
+  <link rel="icon" href="data:,"> <!-- Prevent favicon 404 -->
   <style>
     body { font-family: Arial, sans-serif; margin: 40px; }
     form {
@@ -34,6 +35,7 @@
     }
     #logout { float: right; margin-bottom: 10px; }
     #loginError { color: red; }
+    .photo-input { margin-bottom: 10px; }
   </style>
   <script>
     const USERS = {
@@ -121,10 +123,12 @@
     function handleJobSelect(inputEl, index) {
       const selected = inputEl.value;
       const match = jobData.find(job => job.job_description === selected);
-      document.getElementById("jobCode_" + index).value = match?.job_code || '';
-      document.getElementById("partNumber_" + index).value = match?.part_number || '';
-      document.getElementById("partDesc_" + index).value = match?.part_description || '';
-      document.getElementById("labour_" + index).value = match?.labour_hours || '';
+      if (match) {
+        document.getElementById("jobCode_" + index).value = match.job_code;
+        document.getElementById("partNumber_" + index).value = match.part_number;
+        document.getElementById("partDesc_" + index).value = match.part_description;
+        document.getElementById("labour_" + index).value = match.labour_hours;
+      }
     }
 
     function addAlarm() {
@@ -141,6 +145,7 @@
       const container = document.getElementById(sectionId);
       const input = document.createElement("input");
       input.type = "file";
+      input.className = "photo-input";
       input.name = sectionId + "_extra";
       container.appendChild(input);
     }
