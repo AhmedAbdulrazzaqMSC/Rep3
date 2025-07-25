@@ -181,12 +181,23 @@
       <input type="text" name="warranty_id">
       <label>Guarantee Period (months)</label>
       <input type="text" name="aantal_maanden">
+      <label>Supply Voor</label>
+      <input type="text" name="supply_voor">
+      <label>Supply Na</label>
+      <input type="number" name="supply_na">
+      <label>Return Voor</label>
+      <input type="text" name="return_voor">
+      <label>Return Na</label>
+      <input type="number" name="return_na">
       <div class="section-title">Job Tasks</div>
       <div id="jobContainer"></div>
       <button type="button" onclick="addJob()">Add Job</button>
       <div class="section-title">Alarms</div>
       <div id="alarmContainer"></div>
       <button type="button" onclick="addAlarm()">Add Alarm</button>
+      <div class="section-title">Photos</div>
+      <div id="photoSection"></div>
+      <button type="button" onclick="addPhoto('photoSection')">Add Photo</button>
     </form>
   </div>
 </body>
