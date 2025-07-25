@@ -110,7 +110,6 @@
       <label for="vents">VENTS</label>
       <input type="text" id="vents">
 
-
       <label for="hum">HUM</label>
       <input type="text" id="hum">
 
@@ -135,11 +134,28 @@
       <label for="fotos_na" class="full-width">FOTOS NA</label>
       <input type="file" id="fotos_na" accept="image/*" multiple class="full-width">
 
+      <!-- New Section: Temp/Problem/Remarks -->
+      <label for="temp_in_range">TEMPERATUUR IN-RANGE NA REPAIR</label>
+      <input type="text" id="temp_in_range" name="temp_in_range">
+
+      <label for="probleem" class="full-width">OMSCHRIJVING / PROBLEEM</label>
+      <textarea id="probleem" name="probleem" rows="3" class="full-width" placeholder="Beschrijf hier het probleem..."></textarea>
+
+      <label for="opmerkingen" class="full-width">OPMERKINGEN</label>
+      <textarea id="opmerkingen" name="opmerkingen" rows="3" class="full-width" placeholder="Overige opmerkingen..."></textarea>
+
       <!-- Spare Parts Section -->
       <div class="full-width">
         <h3>Spare Parts Used</h3>
         <div id="partsContainer"></div>
         <button type="button" onclick="addPart()">Add Part</button>
+      </div>
+
+      <!-- Alarms Section -->
+      <div class="full-width">
+        <h3>Alarms</h3>
+        <div id="alarmsContainer"></div>
+        <button type="button" onclick="addAlarm()">Add Alarm</button>
       </div>
 
       <button type="submit" class="full-width">Submit Report</button>
@@ -208,6 +224,28 @@
       `;
 
       container.appendChild(partBlock);
+    }
+
+    function addAlarm() {
+      const container = document.getElementById("alarmsContainer");
+      const alarmIndex = container.children.length + 1;
+
+      const alarmBlock = document.createElement("div");
+      alarmBlock.classList.add("full-width");
+
+      alarmBlock.innerHTML = `
+        <fieldset>
+          <legend>Alarm ${alarmIndex}</legend>
+
+          <label>Alarm Code</label>
+          <input type="text" name="alarm_code_${alarmIndex}" placeholder="e.g. A05, d19">
+
+          <label>Alarm Description</label>
+          <input type="text" name="alarm_desc_${alarmIndex}" placeholder="e.g. Low Pressure Alarm">
+        </fieldset>
+      `;
+
+      container.appendChild(alarmBlock);
     }
   </script>
 
