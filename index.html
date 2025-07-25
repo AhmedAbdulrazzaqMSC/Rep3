@@ -87,9 +87,6 @@
       <label for="warranty_id">WARRANTY ID NR</label>
       <input type="text" id="warranty_id">
 
-      <label for="warranty_tag">WARRANTY TAG NR</label>
-      <input type="text" id="warranty_tag">
-
       <label for="datum_in_service">DATUM IN SERVICE</label>
       <input type="text" id="datum_in_service">
 
@@ -114,14 +111,16 @@
       <label for="ambient">AMBIENT</label>
       <input type="text" id="ambient">
 
+      <!-- Changed to text -->
       <label for="supply_voor">SUPPLY VOOR</label>
-      <input type="number" step="0.1" id="supply_voor">
+      <input type="text" id="supply_voor">
 
       <label for="supply_na">SUPPLY NA</label>
       <input type="number" step="0.1" id="supply_na">
 
+      <!-- Changed to text -->
       <label for="return_voor">RETURN VOOR</label>
-      <input type="number" step="0.1" id="return_voor">
+      <input type="text" id="return_voor">
 
       <label for="return_na">RETURN NA</label>
       <input type="number" step="0.1" id="return_na">
@@ -143,7 +142,6 @@
       "ahmed": "0000"
     };
 
-    // On load – check if already logged in
     window.onload = () => {
       const savedUser = sessionStorage.getItem("technician");
       if (savedUser) {
