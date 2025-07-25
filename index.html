@@ -68,7 +68,8 @@
     function loadTechnician() {
       const name = sessionStorage.getItem("technicianName");
       if (name) {
-        document.getElementById("naam").value = name;
+        const naamField = document.getElementById("naam");
+        if (naamField) naamField.value = name;
         document.getElementById("loginSection").style.display = "none";
         document.getElementById("formSection").style.display = "block";
       } else {
@@ -152,6 +153,27 @@
   </script>
 </head>
 <body>
-<!-- BODY OMITTED FOR BREVITY. FORM LAYOUT UNCHANGED -->
+  <div id="loginSection">
+    <h2>Technician Login</h2>
+    <label>Technician Name:</label>
+    <input type="text" id="techLoginName">
+    <label>Password:</label>
+    <input type="password" id="techPassword">
+    <button onclick="doLogin()">Login</button>
+    <div id="loginError"></div>
+  </div>
+  <div id="formSection" style="display:none;">
+    <button id="logout" onclick="logout()">Logout</button>
+    <form>
+      <label>Technician Name</label>
+      <input type="text" id="naam" name="naam" readonly>
+      <div class="section-title">Job Tasks</div>
+      <div id="jobContainer"></div>
+      <button type="button" onclick="addJob()">Add Job</button>
+      <div class="section-title">Alarms</div>
+      <div id="alarmContainer"></div>
+      <button type="button" onclick="addAlarm()">Add Alarm</button>
+    </form>
+  </div>
 </body>
 </html>
