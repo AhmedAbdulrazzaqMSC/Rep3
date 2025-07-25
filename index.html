@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Repair Form with Login & Session</title>
+  <title>Repair Form with Login & Parts</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -37,6 +37,14 @@
       justify-content: space-between;
       align-items: center;
       margin-bottom: 20px;
+    }
+    fieldset {
+      border: 1px solid #ccc;
+      padding: 15px;
+      margin-bottom: 10px;
+    }
+    legend {
+      font-weight: bold;
     }
   </style>
 </head>
@@ -111,14 +119,12 @@
       <label for="ambient">AMBIENT</label>
       <input type="text" id="ambient">
 
-      <!-- Changed to text -->
       <label for="supply_voor">SUPPLY VOOR</label>
       <input type="text" id="supply_voor">
 
       <label for="supply_na">SUPPLY NA</label>
       <input type="number" step="0.1" id="supply_na">
 
-      <!-- Changed to text -->
       <label for="return_voor">RETURN VOOR</label>
       <input type="text" id="return_voor">
 
@@ -130,6 +136,13 @@
 
       <label for="fotos_na" class="full-width">FOTOS NA</label>
       <input type="file" id="fotos_na" accept="image/*" multiple class="full-width">
+
+      <!-- Spare Parts Section -->
+      <div class="full-width">
+        <h3>Spare Parts Used</h3>
+        <div id="partsContainer"></div>
+        <button type="button" onclick="addPart()">Add Part</button>
+      </div>
 
       <button type="submit" class="full-width">Submit Report</button>
     </form>
@@ -172,6 +185,31 @@
     function logout() {
       sessionStorage.removeItem("technician");
       location.reload();
+    }
+
+    function addPart() {
+      const container = document.getElementById("partsContainer");
+      const partIndex = container.children.length + 1;
+
+      const partBlock = document.createElement("div");
+      partBlock.classList.add("full-width");
+
+      partBlock.innerHTML = `
+        <fieldset>
+          <legend>Part ${partIndex}</legend>
+
+          <label>Part Name/Number</label>
+          <input type="text" name="part_name_${partIndex}" placeholder="e.g. EVK3610-334">
+
+          <label>Old Serial Number</label>
+          <input type="text" name="old_serial_${partIndex}" placeholder="Old SN">
+
+          <label>New Serial Number</label>
+          <input type="text" name="new_serial_${partIndex}" placeholder="New SN">
+        </fieldset>
+      `;
+
+      container.appendChild(partBlock);
     }
   </script>
 
