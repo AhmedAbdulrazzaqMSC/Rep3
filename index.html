@@ -36,6 +36,7 @@
     }
     #logout { float: right; margin-bottom: 10px; }
   </style>
+  <script src="https://ahmedabdulrazzaqmsc.github.io/rep/jobData_full.js"></script>
   <script>
     const USERS = {
       "Admin": "admin123",
@@ -47,14 +48,6 @@
       "Yannick Standaert": "ys123",
       "Youssef Stitou": "yst123"
     };
-
-    const jobData = [...Array(44)].map((_, i) => ({
-      job_description: `Job Description ${i + 1}`,
-      job_code: `Code${i + 1}`,
-      part_number: `Part${i + 1}`,
-      part_description: `Part Description ${i + 1}`,
-      labour_hours: (i % 4) * 0.5 + 0.5
-    }));
 
     function handleJobSelect(inputEl, index) {
       const selected = inputEl.value;
@@ -113,6 +106,14 @@
       container.appendChild(input);
     }
 
+    function addPhoto(sectionId) {
+      const container = document.getElementById(sectionId);
+      const input = document.createElement("input");
+      input.type = "file";
+      input.name = sectionId + "_extra";
+      container.appendChild(input);
+    }
+
     function logout() {
       sessionStorage.removeItem("technicianName");
       location.reload();
@@ -133,58 +134,40 @@
   </script>
 </head>
 <body>
-  <div id="loginSection" style="display:none">
-    <h2>Technician Login</h2>
-    <label>Name:</label><input type="text" id="username">
-    <label>Password:</label><input type="password" id="password">
+  <div id="loginSection">
+    <label>Username:</label>
+    <input type="text" id="username">
+    <label>Password:</label>
+    <input type="password" id="password">
     <button onclick="validateLogin()">Login</button>
   </div>
 
   <div id="formSection" style="display:none">
     <button id="logout" onclick="logout()">Logout</button>
-    <h2>Technician Repair Form</h2>
-    <form id="repairForm">
+    <form>
       <label for="naam">Technician</label>
-      <input type="text" id="naam" name="naam" readonly>
-
-      <label>CONTAINERNR</label><input type="text">
-      <label>DATUM</label><input type="date">
-      <label>MODEL</label><input type="text">
-      <label>DATUM IN DIENST</label><input type="text">
-      <label>SERIENR.</label><input type="text">
-      <label>WARRANTY ID NR</label><input type="text">
-      <label>DATUM IN SERVICE</label><input type="text">
-      <label>GARANTIE</label><input type="text">
-      <label>AANTAL MAANDEN GARANTIE</label><input type="text">
-
-      <label>SETPOINT °C</label><input type="number">
-      <label>VENTS</label><input type="text">
-      <label>HUM</label><input type="text">
-      <label>AMBIENT</label><input type="text">
-      <label>SUPPLY VOOR</label><input type="text">
-      <label>SUPPLY NA</label><input type="number">
-      <label>RETURN VOOR</label><input type="text">
-      <label>RETURN NA</label><input type="number">
+      <input type="text" id="naam" readonly>
 
       <div class="section-title">Photos</div>
-      <label>Photos Before</label><input type="file" name="photo_before">
-      <label>Photos After</label><input type="file" name="photo_after">
+      <div id="fotos_voor">
+        <label>Before Repair</label>
+        <input type="file" name="before_photo">
+      </div>
+      <button type="button" onclick="addPhoto('fotos_voor')">Add Before Photo</button>
+
+      <div id="fotos_na">
+        <label>After Repair</label>
+        <input type="file" name="after_photo">
+      </div>
+      <button type="button" onclick="addPhoto('fotos_na')">Add After Photo</button>
 
       <div class="section-title">Alarms</div>
-      <div id="alarmSection" class="full-width">
-        <input type="text" name="alarm_1">
-      </div>
+      <div id="alarmSection"></div>
       <button type="button" onclick="addAlarm()">Add Alarm</button>
 
       <div class="section-title">Jobs</div>
-      <div id="jobContainer" class="full-width"></div>
+      <div id="jobContainer"></div>
       <button type="button" onclick="addJob()">Add Job</button>
-
-      <label>TEMPERATUUR IN-RANGE NA REPAIR</label><input type="text">
-      <label>OMSCHRIJVING / PROBLEEM</label><textarea rows="2"></textarea>
-      <label>OPMERKINGEN</label><textarea rows="2"></textarea>
-
-      <button class="full-width" type="submit">Submit Report</button>
     </form>
   </div>
 </body>
