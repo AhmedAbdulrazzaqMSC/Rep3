@@ -48,16 +48,13 @@
       "Youssef Stitou": "yst123"
     };
 
-    const jobData = [
-      {"job_description": "Power Plug (Complete) Male - Replace", "job_code": "A001A", "part_number": "22-02378-00PK10", "part_description": "Plug, Power", "labour_hours": 0.5},
-      {"job_description": "Cable, 460 V  - Replace", "job_code": "A002A", "part_number": "22-66654-20", "part_description": "Cable MSC ContainerFlex FG7OK 4G4 11awg (per meter)", "labour_hours": 0.5},
-      {"job_description": "Humidity Sensor  - Replace", "job_code": "A037A", "part_number": "76-66694-00", "part_description": "Sensor, Humidity W/Bracket  (HS)", "labour_hours": 1.25},
-      {"job_description": "Evaporator access panel   - Remove and refit", "job_code": "B082E", "part_number": "N/A", "part_description": "N/A", "labour_hours": 0.25},
-      {"job_description": "Cable, 460 V  - Splice", "job_code": "A002X", "part_number": "22-50463-00PK5", "part_description": "SPLICE KIT FAST III", "labour_hours": 0.5},
-      {"job_description": "Condenser fan motor capacitor - Replace", "job_code": "A005A", "part_number": "22-50088-00", "part_description": "Capacitor, EF, 20uF (High Speed)", "labour_hours": 1.5},
-      {"job_description": "Service Fee", "job_code": "F003U", "part_number": "N/A", "part_description": "N/A", "labour_hours": 0.75},
-      {"job_description": "Controller  - Replace", "job_code": "A018A", "part_number": "12-56012", "part_description": "Controller ML3, Green Label, Repaired", "labour_hours": 1.0}
-    ];
+    const jobData = [...Array(44)].map((_, i) => ({
+      job_description: `Job Description ${i + 1}`,
+      job_code: `Code${i + 1}`,
+      part_number: `Part${i + 1}`,
+      part_description: `Part Description ${i + 1}`,
+      labour_hours: (i % 4) * 0.5 + 0.5
+    }));
 
     function handleJobSelect(inputEl, index) {
       const selected = inputEl.value;
