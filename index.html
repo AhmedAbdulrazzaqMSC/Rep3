@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -38,311 +37,97 @@
     #logout { float: right; margin-bottom: 10px; }
   </style>
   <script>
+    const USERS = {
+      "Admin": "admin123",
+      "Brahim Moukafih": "bm123",
+      "Christophe Jongenelen": "cj123",
+      "Hassan Ouchan": "ho123",
+      "Marc Eyckmans": "me123",
+      "Mohammed Ballafkih": "mb123",
+      "Yannick Standaert": "ys123",
+      "Youssef Stitou": "yst123"
+    };
+
     const jobData = [
-  {
-    "job_description": "Power Plug (Complete) Male - Replace",
-    "job_code": "A001A",
-    "part_number": "22-02378-00PK10",
-    "part_description": "Plug, Power",
-    "labour_hours": 0.5
-  },
-  {
-    "job_description": "Cable, 460 V  - Replace",
-    "job_code": "A002A",
-    "part_number": "22-66654-20",
-    "part_description": "Cable MSC ContainerFlex FG7OK 4G4 11awg (per meter)",
-    "labour_hours": 0.5
-  },
-  {
-    "job_description": "Humidity Sensor  - Replace",
-    "job_code": "A037A",
-    "part_number": "76-66694-00",
-    "part_description": "Sensor, Humidity W/Bracket  (HS)",
-    "labour_hours": 1.25
-  },
-  {
-    "job_description": "Evaporator access panel   - Remove and refit",
-    "job_code": "B082E",
-    "part_number": "N/A",
-    "part_description": "N/A",
-    "labour_hours": 0.25
-  },
-  {
-    "job_description": "Cable, 460 V  - Splice",
-    "job_code": "A002X",
-    "part_number": "22-50463-00PK5",
-    "part_description": "SPLICE KIT FAST III",
-    "labour_hours": 0.5
-  },
-  {
-    "job_description": "Condenser fan motor capacitor - Replace",
-    "job_code": "A005A",
-    "part_number": "22-50088-00",
-    "part_description": "Capacitor, EF, 20uF (High Speed)",
-    "labour_hours": 1.5
-  },
-  {
-    "job_description": "Condenser grille  - Remove and refit",
-    "job_code": "B077E",
-    "part_number": "N/A",
-    "part_description": "N/A",
-    "labour_hours": 0.25
-  },
-  {
-    "job_description": "Service Fee",
-    "job_code": "F003U",
-    "part_number": "N/A",
-    "part_description": "N/A",
-    "labour_hours": 0.75
-  },
-  {
-    "job_description": "Controller  - Replace",
-    "job_code": "A018A",
-    "part_number": "12-56012",
-    "part_description": "Controller ML3, Green Label, Repaired",
-    "labour_hours": 1.0
-  },
-  {
-    "job_description": "Controller Key Pad  - Replace",
-    "job_code": "A039A",
-    "part_number": "79-66669-05",
-    "part_description": "Keypad Assy",
-    "labour_hours": 0.5
-  },
-  {
-    "job_description": "Cable Receptacle (Elec Conn) Male - Remove and refit",
-    "job_code": "A001E",
-    "part_number": "N/A",
-    "part_description": "N/A",
-    "labour_hours": 0.5
-  },
-  {
-    "job_description": "Ambient sensor  - Replace",
-    "job_code": "A053A",
-    "part_number": "12-00495-02SV",
-    "part_description": "Sensor, Ambient / Defrost kit (AMBS / DTS)",
-    "labour_hours": 0.5
-  },
-  {
-    "job_description": "Temperature display  - Replace",
-    "job_code": "A029A",
-    "part_number": "12-00433-00RB",
-    "part_description": "Module, Display (Repaired)",
-    "labour_hours": 0.5
-  },
-  {
-    "job_description": "Evaporation  coil defrost temperature sensor - Replace",
-    "job_code": "A051A",
-    "part_number": "12-00495-02SV",
-    "part_description": "Sensor, Ambient / Defrost kit (AMBS / DTS)",
-    "labour_hours": 0.5
-  },
-  {
-    "job_description": "Coil Assembly Condenser - Replace",
-    "job_code": "B075A",
-    "part_number": "69NT43-202-20PK5",
-    "part_description": "Condenser Coil, 4-Row",
-    "labour_hours": 4.0
-  },
-  {
-    "job_description": "Drier filter  - Replace",
-    "job_code": "B087A",
-    "part_number": "14-00464-20PK25",
-    "part_description": "N/A",
-    "labour_hours": 0.5
-  },
-  {
-    "job_description": "Refrigerant R134A Charge  - Recharge",
-    "job_code": "E001II",
-    "part_number": "N/A",
-    "part_description": "N/A",
-    "labour_hours": 0.5
-  },
-  {
-    "job_description": "Transformer, Current Sensing - Replace",
-    "job_code": "A028A",
-    "part_number": "10-00439-00",
-    "part_description": "Transformer, Current Sensing (CS)",
-    "labour_hours": 0.5
-  },
-  {
-    "job_description": "Valve Suction Modulation - Remove and refit",
-    "job_code": "B123E",
-    "part_number": "N/A",
-    "part_description": "N/A",
-    "labour_hours": 0.5
-  },
-  {
-    "job_description": "Circuit breaker, 460 V  - Replace",
-    "job_code": "A008A",
-    "part_number": "66U1-7842-13",
-    "part_description": "Breaker, Circuit - 460 vac, 25 Amp, (CB1)",
-    "labour_hours": 1.0
-  },
-  {
-    "job_description": "Compressor contactor   - Replace",
-    "job_code": "A013A",
-    "part_number": "10-00431-07",
-    "part_description": "Contactor, 30A",
-    "labour_hours": 0.75
-  },
-  {
-    "job_description": "Temperature display  - Re-secure",
-    "job_code": "A029D",
-    "part_number": "N/A",
-    "part_description": "N/A",
-    "labour_hours": 0.25
-  },
-  {
-    "job_description": "Fuse  - Replace",
-    "job_code": "A034A",
-    "part_number": "22-02336-08",
-    "part_description": "Fuse, 7.5 Amp",
-    "labour_hours": 0.25
-  },
-  {
-    "job_description": "DataCorder Battery Pack   - Replace",
-    "job_code": "A041A",
-    "part_number": "30-50377-00",
-    "part_description": "Controller/DataCORDER Module Standard Battery Holder with Connector",
-    "labour_hours": 0.25
-  },
-  {
-    "job_description": "Travel",
-    "job_code": "F001SS",
-    "part_number": "N/A",
-    "part_description": "N/A",
-    "labour_hours": 0.5
-  },
-  {
-    "job_description": "Compressor, complete (with motor) - Replace",
-    "job_code": "B064A",
-    "part_number": "18-10178-22",
-    "part_description": "COMPRESSOR SCROLL PRIMELINE",
-    "labour_hours": 2.0
-  },
-  {
-    "job_description": "Refrigerant R134A Charge  - Top up",
-    "job_code": "E001GG",
-    "part_number": "N/A",
-    "part_description": "N/A",
-    "labour_hours": 0.5
-  },
-  {
-    "job_description": "Liquid line service valve  - Re-secure",
-    "job_code": "B116D",
-    "part_number": "N/A",
-    "part_description": "N/A",
-    "labour_hours": 0.44
-  },
-  {
-    "job_description": "Terminal Mounting Kit Compressor - 5 kit - Replace",
-    "job_code": "B069A",
-    "part_number": "76-50210-00",
-    "part_description": "Kit, Compressor Terminal Wiring (Single Voltage)",
-    "labour_hours": 1.0
-  },
-  {
-    "job_description": "Oil charge - Replace",
-    "job_code": "B074A",
-    "part_number": "07-00292-00",
-    "part_description": "SW20 Compressor Oil, Castrol Icematic (Quart) (1 liter)",
-    "labour_hours": 0.5
-  },
-  {
-    "job_description": "High-pressure cut-out  - Replace",
-    "job_code": "B094A",
-    "part_number": "12-00309-06",
-    "part_description": "Switch, High Pressure (HPS)",
-    "labour_hours": 0.5
-  },
-  {
-    "job_description": "Service valve gasket   - Replace",
-    "job_code": "B110A",
-    "part_number": "17-10811-05",
-    "part_description": "Gasket, Service Valve (2 Bolt) (excl all related jobs)",
-    "labour_hours": 0.25
-  },
-  {
-    "job_description": "Valve Suction Modulation - Replace",
-    "job_code": "B123A",
-    "part_number": "14-00353-20",
-    "part_description": "Piston and Motor Assembly",
-    "labour_hours": 0.25
-  },
-  {
-    "job_description": "Control sensor (supply air)  - Replace",
-    "job_code": "A058A",
-    "part_number": "12-00395-01SV",
-    "part_description": "Sensor, Supply, Assembly (SRS & STS)",
-    "labour_hours": 0.75
-  },
-  {
-    "job_description": "Cable, 460 V  - Rewire",
-    "job_code": "A002G",
-    "part_number": "N/A",
-    "part_description": "N/A",
-    "labour_hours": 0.25
-  },
-  {
-    "job_description": "Controller Key Pad  - Re-secure",
-    "job_code": "A039D",
-    "part_number": "N/A",
-    "part_description": "N/A",
-    "labour_hours": 0.25
-  },
-  {
-    "job_description": "Fan  - Remove and refit",
-    "job_code": "A011E",
-    "part_number": "N/A",
-    "part_description": "N/A",
-    "labour_hours": 0.5
-  },
-  {
-    "job_description": "Evaporator Fan Motor  - Replace",
-    "job_code": "A030A",
-    "part_number": "54-00742-00",
-    "part_description": "Motor, evaporator",
-    "labour_hours": 1.0
-  },
-  {
-    "job_description": "Fan  - Replace",
-    "job_code": "A011A",
-    "part_number": "38-00557-00",
-    "part_description": "Fan, Evaporator",
-    "labour_hours": 0.5
-  },
-  {
-    "job_description": "Evaporator access panel   - Replace",
-    "job_code": "B082A",
-    "part_number": "79-01697-06",
-    "part_description": "N/A",
-    "labour_hours": 0.5
-  }
-];
+      { job_description: "Fan - Replace", job_code: "A011A", part_number: "38-00557-00", part_description: "Fan, Evaporator", labour_hours: 0.5 },
+      { job_description: "Controller - Replace", job_code: "A018A", part_number: "12-56012", part_description: "Controller ML3, Green Label, Repaired", labour_hours: 1.0 },
+      { job_description: "Humidity Sensor - Replace", job_code: "A037A", part_number: "76-66694-00", part_description: "Sensor, Humidity W/Bracket (HS)", labour_hours: 1.25 }
+    ];
+
+    function doLogin() {
+      const name = document.getElementById("techLoginName").value.trim();
+      const pass = document.getElementById("techPassword").value.trim();
+      if (USERS[name] && USERS[name] === pass) {
+        sessionStorage.setItem("technicianName", name);
+        loadTechnician();
+      } else {
+        alert("Invalid name or password.");
+      }
+    }
+
+    function loadTechnician() {
+      const name = sessionStorage.getItem("technicianName");
+      if (name) {
+        document.getElementById("naam").value = name;
+        document.getElementById("loginSection").style.display = "none";
+        document.getElementById("formSection").style.display = "block";
+        addJob();
+        addAlarm();
+      } else {
+        document.getElementById("loginSection").style.display = "block";
+        document.getElementById("formSection").style.display = "none";
+      }
+    }
+
+    function logout() {
+      sessionStorage.removeItem("technicianName");
+      location.reload();
+    }
+
+    function addPhoto(sectionId) {
+      const container = document.getElementById(sectionId);
+      const input = document.createElement("input");
+      input.type = "file";
+      input.name = sectionId + "_extra";
+      container.appendChild(input);
+    }
+
+    function addAlarm() {
+      const container = document.getElementById("alarmContainer");
+      const input = document.createElement("input");
+      input.type = "text";
+      input.name = "alarm";
+      input.placeholder = "Alarm";
+      container.appendChild(input);
+    }
 
     function addJob() {
       const container = document.getElementById("jobContainer");
       const index = container.children.length + 1;
-      const fieldset = document.createElement("fieldset");
       const datalistId = "jobList_" + index;
+      const fieldset = document.createElement("fieldset");
       const options = jobData.map(j => `<option value="${j.job_description}">`).join("");
 
       fieldset.innerHTML = `
         <legend>Job ${index}</legend>
         <label>Job Description</label>
         <input type="text" list="${datalistId}" oninput="handleJobSelect(this, ${index})" placeholder="Start typing...">
-        <datalist id="${datalistId}">
-          ${options}
-        </datalist>
+        <datalist id="${datalistId}">${options}</datalist>
         <label>Job Code</label>
         <input type="text" id="jobCode_${index}" class="readonly" readonly>
         <label>Part Number</label>
         <input type="text" id="partNumber_${index}" class="readonly" readonly>
         <label>Part Description</label>
         <input type="text" id="partDesc_${index}" class="readonly" readonly>
+        <label>Quantity</label>
+        <input type="text" name="quantity_${index}">
+        <label>Old Serial Number</label>
+        <input type="text" name="serial_old_${index}">
+        <label>New Serial Number</label>
+        <input type="text" name="serial_new_${index}">
         <input type="hidden" id="labour_${index}">
       `;
+
       container.appendChild(fieldset);
     }
 
@@ -355,125 +140,42 @@
       document.getElementById("labour_" + index).value = match?.labour_hours || '';
     }
 
-    function addAlarm() {
-      const container = document.getElementById("alarmContainer");
-      const index = container.children.length + 1;
-      const input = document.createElement("input");
-      input.type = "text";
-      input.name = "alarm_" + index;
-      input.placeholder = "Alarm " + index;
-      container.appendChild(input);
-    }
-
-    function addPhoto(sectionId) {
-      const container = document.getElementById(sectionId);
-      const input = document.createElement("input");
-      input.type = "file";
-      input.name = sectionId + "_extra";
-      container.appendChild(input);
-    }
-
-    function loadTechnician() {
-      const name = sessionStorage.getItem("technicianName");
-      if (name) {
-        document.getElementById("naam").value = name;
-        document.getElementById("loginSection").style.display = "none";
-        document.getElementById("formSection").style.display = "block";
-      } else {
-        document.getElementById("loginSection").style.display = "block";
-        document.getElementById("formSection").style.display = "none";
-      }
-    }
-
-    function doLogin() {
-      const name = document.getElementById("techLoginName").value.trim();
-      if (name) {
-        sessionStorage.setItem("technicianName", name);
-        loadTechnician();
-      }
-    }
-
-    function logout() {
-      sessionStorage.removeItem("technicianName");
-      location.reload();
-    }
-
-    window.onload = function() {
+    window.onload = function () {
       loadTechnician();
-      addJob();
-      addAlarm();
     };
   </script>
 </head>
 <body>
-
 <div id="loginSection">
   <h2>Technician Login</h2>
-  <label>Enter Your Name:</label>
+  <label>Technician Name:</label>
   <input type="text" id="techLoginName">
+  <label>Password:</label>
+  <input type="password" id="techPassword">
   <button onclick="doLogin()">Login</button>
 </div>
-
 <div id="formSection" style="display:none;">
   <button id="logout" onclick="logout()">Logout</button>
   <h2>Technician Repair Form</h2>
   <form id="repairForm">
-
-    <label for="containernr">CONTAINERNR</label>
-    <input type="text" id="containernr" name="containernr">
-
-    <label for="datum">DATUM (Date)</label>
-    <input type="date" id="datum" name="datum">
-
-    <label for="naam">NAAM (Technician Name)</label>
-    <input type="text" id="naam" name="naam">
-
-    <label for="model">MODEL</label>
-    <input type="text" id="model" name="model">
-
-    <label for="datum_in_dienst">DATUM IN DIENST</label>
-    <input type="text" id="datum_in_dienst" name="datum_in_dienst">
-
-    <label for="serienr">SERIENR.</label>
-    <input type="text" id="serienr" name="serienr">
-
-    <label for="warranty_id">WARRANTY ID NR</label>
-    <input type="text" id="warranty_id" name="warranty_id">
-
-    <label for="datum_in_service">DATUM IN SERVICE</label>
-    <input type="text" id="datum_in_service" name="datum_in_service">
-
-    <label for="garantie">GARANTIE</label>
-    <input type="text" id="garantie" name="garantie">
-
-    <label for="aantal_maanden">AANTAL MAANDEN GARANTIE</label>
-    <input type="text" id="aantal_maanden" name="aantal_maanden">
-
-    <div class="section-title">Temperature Diagnostics</div>
-
-    <label for="setpoint">SETPOINT °C</label>
-    <input type="number" id="setpoint" name="setpoint">
-
-    <label for="vents">VENTS</label>
-    <input type="text" id="vents" name="vents">
-
-    <label for="hum">HUM</label>
-    <input type="text" id="hum" name="hum">
-
-    <label for="ambient">AMBIENT</label>
-    <input type="text" id="ambient" name="ambient">
-
-    <label for="supply_voor">SUPPLY VOOR</label>
-    <input type="text" id="supply_voor" name="supply_voor">
-
-    <label for="supply_na">SUPPLY NA</label>
-    <input type="number" id="supply_na" name="supply_na">
-
-    <label for="return_voor">RETURN VOOR</label>
-    <input type="text" id="return_voor" name="return_voor">
-
-    <label for="return_na">RETURN NA</label>
-    <input type="number" id="return_na" name="return_na">
+    <label>CONTAINERNR</label><input type="text" name="containernr">
+    <label>DATUM (Date)</label><input type="date" name="datum">
+    <label>NAAM (Technician Name)</label><input type="text" id="naam" name="naam">
+    <label>MODEL</label><input type="text" name="model">
+    <label>DATUM IN DIENST</label><input type="text" name="datum_in_dienst">
+    <label>SERIENR.</label><input type="text" name="serienr">
+    <label>WARRANTY ID NR</label><input type="text" name="warranty_id">
+    <label>DATUM IN SERVICE</label><input type="text" name="datum_in_service">
+    <label>GARANTIE</label><input type="text" name="garantie">
+    <label>AANTAL MAANDEN GARANTIE</label><input type="text" name="aantal_maanden">
+    <label>SETPOINT °C</label><input type="number" name="setpoint">
+    <label>VENTS</label><input type="text" name="vents">
+    <label>HUM</label><input type="text" name="hum">
+    <label>AMBIENT</label><input type="text" name="ambient">
+    <label>SUPPLY VOOR</label><input type="text" name="supply_voor">
+    <label>SUPPLY NA</label><input type="number" name="supply_na">
+    <label>RETURN VOOR</label><input type="text" name="return_voor">
+    <label>RETURN NA</label><input type="number" name="return_na">
 
     <div class="section-title">Photos</div>
     <div id="fotos_voor">
@@ -496,18 +198,11 @@
     <div class="full-width" id="jobContainer"></div>
     <button type="button" onclick="addJob()">Add Job</button>
 
-    <label for="temp_in_range">TEMPERATUUR IN-RANGE NA REPAIR</label>
-    <input type="text" id="temp_in_range" name="temp_in_range">
-
-    <label for="probleem" class="full-width">OMSCHRIJVING / PROBLEEM</label>
-    <textarea id="probleem" name="probleem" rows="3" class="full-width"></textarea>
-
-    <label for="opmerkingen" class="full-width">OPMERKINGEN</label>
-    <textarea id="opmerkingen" name="opmerkingen" rows="3" class="full-width"></textarea>
-
+    <label>TEMPERATUUR IN-RANGE NA REPAIR</label><input type="text" name="temp_in_range">
+    <label class="full-width">OMSCHRIJVING / PROBLEEM</label><textarea name="probleem" rows="3" class="full-width"></textarea>
+    <label class="full-width">OPMERKINGEN</label><textarea name="opmerkingen" rows="3" class="full-width"></textarea>
     <button type="submit" class="full-width">Submit Report</button>
   </form>
 </div>
-
 </body>
 </html>
