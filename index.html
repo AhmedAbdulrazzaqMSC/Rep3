@@ -2,11 +2,14 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Repair Report Form</title>
+  <title>Repair Form with Login & Session</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       margin: 40px;
+    }
+    .hidden {
+      display: none;
     }
     form {
       max-width: 800px;
@@ -25,84 +28,154 @@
     .full-width {
       grid-column: 1 / 3;
     }
+    .center {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
   </style>
 </head>
 <body>
 
-  <h2>Medrepair Repair Form</h2>
+  <!-- Login Section -->
+  <div id="loginSection">
+    <h2>Technician Login</h2>
+    <form onsubmit="handleLogin(event)">
+      <label for="username">Name:</label>
+      <input type="text" id="username" required>
 
-  <form>
-    <!-- Basic Info -->
-    <label for="containernr">CONTAINERNR</label>
-    <input type="text" id="containernr" name="containernr">
+      <label for="password">Password:</label>
+      <input type="password" id="password" required>
 
-    <label for="datum">DATUM (Date)</label>
-    <input type="date" id="datum" name="datum">
+      <div class="full-width center">
+        <button type="submit">Login</button>
+      </div>
+    </form>
+  </div>
 
-    <label for="naam">NAAM (Technician Name)</label>
-    <input type="text" id="naam" name="naam">
+  <!-- Repair Form Section -->
+  <div id="formSection" class="hidden">
+    <div class="topbar">
+      <h2>Repair Report Form</h2>
+      <button onclick="logout()">Logout</button>
+    </div>
 
-    <label for="model">MODEL</label>
-    <input type="text" id="model" name="model">
+    <form>
+      <label for="containernr">CONTAINERNR</label>
+      <input type="text" id="containernr">
 
-    <label for="datum_in_dienst">DATUM IN DIENST</label>
-    <input type="text" id="datum_in_dienst" name="datum_in_dienst">
+      <label for="datum">DATUM (Date)</label>
+      <input type="date" id="datum">
 
-    <label for="serienr">SERIENR.</label>
-    <input type="text" id="serienr" name="serienr">
+      <label for="naam">NAAM (Technician Name)</label>
+      <input type="text" id="naam" readonly>
 
-    <label for="warranty_id">WARRANTY ID NR</label>
-    <input type="text" id="warranty_id" name="warranty_id">
+      <label for="model">MODEL</label>
+      <input type="text" id="model">
 
-    <label for="warranty_tag">WARRANTY TAG NR</label>
-    <input type="text" id="warranty_tag" name="warranty_tag">
+      <label for="datum_in_dienst">DATUM IN DIENST</label>
+      <input type="text" id="datum_in_dienst">
 
-    <label for="datum_in_service">DATUM IN SERVICE</label>
-    <input type="text" id="datum_in_service" name="datum_in_service">
+      <label for="serienr">SERIENR.</label>
+      <input type="text" id="serienr">
 
-    <label for="garantie">GARANTIE</label>
-    <input type="text" id="garantie" name="garantie">
+      <label for="warranty_id">WARRANTY ID NR</label>
+      <input type="text" id="warranty_id">
 
-    <label for="aantal_maanden">AANTAL MAANDEN GARANTIE</label>
-    <input type="text" id="aantal_maanden" name="aantal_maanden">
+      <label for="warranty_tag">WARRANTY TAG NR</label>
+      <input type="text" id="warranty_tag">
 
-    <!-- Temperature and Readings -->
-    <label for="setpoint">SETPOINT °C</label>
-    <input type="number" step="0.1" id="setpoint" name="setpoint">
+      <label for="datum_in_service">DATUM IN SERVICE</label>
+      <input type="text" id="datum_in_service">
 
-    <label for="vents">VENTS</label>
-    <input type="text" id="vents" name="vents">
+      <label for="garantie">GARANTIE</label>
+      <input type="text" id="garantie">
 
-    <label for="cmh">CMH</label>
-    <input type="text" id="cmh" name="cmh">
+      <label for="aantal_maanden">AANTAL MAANDEN GARANTIE</label>
+      <input type="text" id="aantal_maanden">
 
-    <label for="hum">HUM</label>
-    <input type="text" id="hum" name="hum">
+      <label for="setpoint">SETPOINT °C</label>
+      <input type="number" step="0.1" id="setpoint">
 
-    <label for="ambient">AMBIENT</label>
-    <input type="text" id="ambient" name="ambient">
+      <label for="vents">VENTS</label>
+      <input type="text" id="vents">
 
-    <label for="supply_voor">SUPPLY VOOR</label>
-    <input type="number" step="0.1" id="supply_voor" name="supply_voor">
+      <label for="cmh">CMH</label>
+      <input type="text" id="cmh">
 
-    <label for="supply_na">SUPPLY NA</label>
-    <input type="number" step="0.1" id="supply_na" name="supply_na">
+      <label for="hum">HUM</label>
+      <input type="text" id="hum">
 
-    <label for="return_voor">RETURN VOOR</label>
-    <input type="number" step="0.1" id="return_voor" name="return_voor">
+      <label for="ambient">AMBIENT</label>
+      <input type="text" id="ambient">
 
-    <label for="return_na">RETURN NA</label>
-    <input type="number" step="0.1" id="return_na" name="return_na">
+      <label for="supply_voor">SUPPLY VOOR</label>
+      <input type="number" step="0.1" id="supply_voor">
 
-    <!-- File Upload -->
-    <label for="fotos_voor" class="full-width">FOTOS VOOR</label>
-    <input type="file" id="fotos_voor" name="fotos_voor" accept="image/*" multiple class="full-width">
+      <label for="supply_na">SUPPLY NA</label>
+      <input type="number" step="0.1" id="supply_na">
 
-    <label for="fotos_na" class="full-width">FOTOS NA</label>
-    <input type="file" id="fotos_na" name="fotos_na" accept="image/*" multiple class="full-width">
+      <label for="return_voor">RETURN VOOR</label>
+      <input type="number" step="0.1" id="return_voor">
 
-    <button type="submit" class="full-width">Submit Report</button>
-  </form>
+      <label for="return_na">RETURN NA</label>
+      <input type="number" step="0.1" id="return_na">
+
+      <label for="fotos_voor" class="full-width">FOTOS VOOR</label>
+      <input type="file" id="fotos_voor" accept="image/*" multiple class="full-width">
+
+      <label for="fotos_na" class="full-width">FOTOS NA</label>
+      <input type="file" id="fotos_na" accept="image/*" multiple class="full-width">
+
+      <button type="submit" class="full-width">Submit Report</button>
+    </form>
+  </div>
+
+  <script>
+    const users = {
+      "ali": "1234",
+      "fatima": "abcd",
+      "ahmed": "0000"
+    };
+
+    // On load – check if already logged in
+    window.onload = () => {
+      const savedUser = sessionStorage.getItem("technician");
+      if (savedUser) {
+        showForm(savedUser);
+      }
+    };
+
+    function handleLogin(e) {
+      e.preventDefault();
+      const username = document.getElementById("username").value.trim().toLowerCase();
+      const password = document.getElementById("password").value;
+
+      if (users[username] && users[username] === password) {
+        sessionStorage.setItem("technician", username);
+        showForm(username);
+      } else {
+        alert("Incorrect name or password.");
+      }
+    }
+
+    function showForm(username) {
+      const capitalName = username.charAt(0).toUpperCase() + username.slice(1);
+      document.getElementById("naam").value = capitalName;
+      document.getElementById("loginSection").classList.add("hidden");
+      document.getElementById("formSection").classList.remove("hidden");
+    }
+
+    function logout() {
+      sessionStorage.removeItem("technician");
+      location.reload();
+    }
+  </script>
 
 </body>
 </html>
