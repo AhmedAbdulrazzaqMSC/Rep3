@@ -485,7 +485,7 @@ async function submitRepair(e) {
     };
 
     const jobs = [];
-    const jobRows = document.querySelectorAll(".job-row"); // Adjust this if needed
+    const jobRows = document.querySelectorAll("#jobContainer fieldset");
 
     jobRows.forEach(row => {
         jobs.push({
