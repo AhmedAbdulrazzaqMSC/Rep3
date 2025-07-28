@@ -423,7 +423,7 @@
 <div id="formSection" style="display:none;">
   <button id="logout" onclick="logout()">Logout</button>
   <h2>Technician Repair Form</h2>
-  <form id="repairForm">
+  <form id="repairForm" method="POST" enctype="multipart/form-data">
     <label>CONTAINERNR</label><input type="text" name="containernr">
     <label>DATUM (Date)</label><input type="date" name="datum">
     <label>NAAM (Technician Name)</label><input type="text" id="naam" name="naam">
