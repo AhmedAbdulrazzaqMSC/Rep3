@@ -485,29 +485,41 @@ async function submitRepair(e) {
     };
 
     const jobs = [];
-    const jobRows = document.querySelectorAll("#jobContainer fieldset");
+    const jobFieldsets = document.querySelectorAll("#jobContainer fieldset");
 
-    jobRows.forEach(row => {
+    jobFieldsets.forEach((fieldset, i) => {
+        const index = i + 1;
         jobs.push({
-            job_code: row.querySelector("[name='job_code']").value,
-            job_description: row.querySelector("[name='job_description']").value,
-            part_number: row.querySelector("[name='part_number']").value,
-            part_description: row.querySelector("[name='part_description']").value,
-            labour_hours: parseFloat(row.querySelector("[name='labour_hours']").value),
-            quantity: row.querySelector("[name='quantity']").value
+            job_code: document.getElementById(`jobCode_${index}`).value,
+            job_description: fieldset.querySelector("input[list]").value,
+            part_number: document.getElementById(`partNumber_${index}`).value,
+            part_description: document.getElementById(`partDesc_${index}`).value,
+            labour_hours: parseFloat(document.getElementById(`labour_${index}`).value),
+            quantity: fieldset.querySelector(`[name='quantity_${index}']`)?.value || '',
+            serial_old: fieldset.querySelector(`[name='serial_old_${index}']`)?.value || '',
+            serial_new: fieldset.querySelector(`[name='serial_new_${index}']`)?.value || ''
         });
     });
 
     const payload = { metadata, jobs };
 
-    const response = await fetch("http://127.0.0.1:5001/submit", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-    });
+    try {
+        const response = await fetch("http://127.0.0.1:5001/submit", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        });
 
-    const result = await response.json();
-    alert("✅ Submitted. File saved as: " + result.saved_as);
+        if (!response.ok) {
+            throw new Error("Server error: " + response.status);
+        }
+
+        const result = await response.json();
+        alert("✅ Submitted. File saved as: " + result.saved_as);
+    } catch (error) {
+        alert("❌ Submission failed: " + error.message);
+        console.error(error);
+    }
 }
 </script>
 </body>
