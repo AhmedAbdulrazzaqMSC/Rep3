@@ -471,21 +471,6 @@
   </form>
 </div>
   <script>
-document.getElementById("repairForm").addEventListener("submit", async function(e) {
-  e.preventDefault();
-
-  const formData = new FormData(this);
-
-  const response = await fetch("http://127.0.0.1:5001/submit", {
-    method: "POST",
-    body: formData
-  });
-
-  const result = await response.text();
-  alert(result); // Shows confirmation from backend
-});
-</script>
-  <script>
 async function submitRepair(e) {
     e.preventDefault();
 
