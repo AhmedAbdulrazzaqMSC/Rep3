@@ -484,52 +484,65 @@ async function submitRepair(e) {
     datum: document.querySelector("[name='datum']").value,
     naam: document.querySelector("[name='naam']").value,
     model: document.querySelector("[name='model']").value,
+    datum_in_dienst: document.querySelector("[name='datum_in_dienst']").value,
+    serienr: document.querySelector("[name='serienr']").value,
+    warranty_id: document.querySelector("[name='warranty_id']").value,
+    datum_in_service: document.querySelector("[name='datum_in_service']").value,
+    garantie: document.querySelector("[name='garantie']").value,
+    aantal_maanden: document.querySelector("[name='aantal_maanden']").value,
+    setpoint: document.querySelector("[name='setpoint']").value,
+    vents: document.querySelector("[name='vents']").value,
+    hum: document.querySelector("[name='hum']").value,
+    ambient: document.querySelector("[name='ambient']").value,
+    supply_voor: document.querySelector("[name='supply_voor']").value,
+    supply_na: document.querySelector("[name='supply_na']").value,
+    return_voor: document.querySelector("[name='return_voor']").value,
+    return_na: document.querySelector("[name='return_na']").value,
     temp_in_range: document.querySelector("[name='temp_in_range']").value,
     probleem: document.querySelector("[name='probleem']").value,
     opmerkingen: document.querySelector("[name='opmerkingen']").value,
     fotos_voor_names: extractFilenames("fotos_voor"),
     fotos_na_names: extractFilenames("fotos_na")
   };
-}
 
+  const jobs = [];
+  const jobFieldsets = document.querySelectorAll("#jobContainer fieldset");
 
-    const jobs = [];
-    const jobFieldsets = document.querySelectorAll("#jobContainer fieldset");
+  jobFieldsets.forEach((fieldset, i) => {
+    const index = i + 1;
+    jobs.push({
+      job_code: document.getElementById(`jobCode_${index}`).value,
+      job_description: fieldset.querySelector("input[list]").value,
+      part_number: document.getElementById(`partNumber_${index}`).value,
+      part_description: document.getElementById(`partDesc_${index}`).value,
+      labour_hours: parseFloat(document.getElementById(`labour_${index}`).value),
+      quantity: fieldset.querySelector(`[name='quantity_${index}']`)?.value || '',
+      serial_old: fieldset.querySelector(`[name='serial_old_${index}']`)?.value || '',
+      serial_new: fieldset.querySelector(`[name='serial_new_${index}']`)?.value || ''
+    });
+  });
 
-    jobFieldsets.forEach((fieldset, i) => {
-        const index = i + 1;
-        jobs.push({
-            job_code: document.getElementById(`jobCode_${index}`).value,
-            job_description: fieldset.querySelector("input[list]").value,
-            part_number: document.getElementById(`partNumber_${index}`).value,
-            part_description: document.getElementById(`partDesc_${index}`).value,
-            labour_hours: parseFloat(document.getElementById(`labour_${index}`).value),
-            quantity: fieldset.querySelector(`[name='quantity_${index}']`)?.value || '',
-            serial_old: fieldset.querySelector(`[name='serial_old_${index}']`)?.value || '',
-            serial_new: fieldset.querySelector(`[name='serial_new_${index}']`)?.value || ''
-        });
+  const payload = { metadata, jobs };
+
+  try {
+    const response = await fetch("http://127.0.0.1:5001/submit", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
     });
 
-    const payload = { metadata, jobs };
-
-    try {
-        const response = await fetch("http://127.0.0.1:5001/submit", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
-        });
-
-        if (!response.ok) {
-            throw new Error("Server error: " + response.status);
-        }
-
-        const result = await response.json();
-        alert("✅ Submitted. File saved as: " + result.saved_as);
-    } catch (error) {
-        alert("❌ Submission failed: " + error.message);
-        console.error(error);
+    if (!response.ok) {
+      throw new Error("Server error: " + response.status);
     }
+
+    const result = await response.json();
+    alert("✅ Submitted. File saved as: " + result.saved_as);
+  } catch (error) {
+    alert("❌ Submission failed: " + error.message);
+    console.error(error);
+  }
 }
 </script>
+
 </body>
 </html>
