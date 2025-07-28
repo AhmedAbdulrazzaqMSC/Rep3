@@ -472,17 +472,26 @@
 </div>
   <script>
 async function submitRepair(e) {
-    e.preventDefault();
+  e.preventDefault();
 
-    const metadata = {
-        containernr: document.querySelector("[name='containernr']").value,
-        datum: document.querySelector("[name='datum']").value,
-        naam: document.querySelector("[name='naam']").value,
-        model: document.querySelector("[name='model']").value,
-        temp_in_range: document.querySelector("[name='temp_in_range']").value,
-        probleem: document.querySelector("[name='probleem']").value,
-        opmerkingen: document.querySelector("[name='opmerkingen']").value
-    };
+  function extractFilenames(inputName) {
+    const inputs = document.querySelectorAll(`[name='${inputName}']`);
+    return Array.from(inputs).map(input => input.files[0]?.name || "").filter(Boolean);
+  }
+
+  const metadata = {
+    containernr: document.querySelector("[name='containernr']").value,
+    datum: document.querySelector("[name='datum']").value,
+    naam: document.querySelector("[name='naam']").value,
+    model: document.querySelector("[name='model']").value,
+    temp_in_range: document.querySelector("[name='temp_in_range']").value,
+    probleem: document.querySelector("[name='probleem']").value,
+    opmerkingen: document.querySelector("[name='opmerkingen']").value,
+    fotos_voor_names: extractFilenames("fotos_voor"),
+    fotos_na_names: extractFilenames("fotos_na")
+  };
+}
+
 
     const jobs = [];
     const jobFieldsets = document.querySelectorAll("#jobContainer fieldset");
