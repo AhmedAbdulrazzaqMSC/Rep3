@@ -485,5 +485,45 @@ document.getElementById("repairForm").addEventListener("submit", async function(
   alert(result); // Shows confirmation from backend
 });
 </script>
+  <script>
+async function submitRepair(e) {
+    e.preventDefault();
+
+    const metadata = {
+        containernr: document.querySelector("[name='containernr']").value,
+        datum: document.querySelector("[name='datum']").value,
+        naam: document.querySelector("[name='naam']").value,
+        model: document.querySelector("[name='model']").value,
+        temp_in_range: document.querySelector("[name='temp_in_range']").value,
+        probleem: document.querySelector("[name='probleem']").value,
+        opmerkingen: document.querySelector("[name='opmerkingen']").value
+    };
+
+    const jobs = [];
+    const jobRows = document.querySelectorAll(".job-row"); // Adjust this if needed
+
+    jobRows.forEach(row => {
+        jobs.push({
+            job_code: row.querySelector("[name='job_code']").value,
+            job_description: row.querySelector("[name='job_description']").value,
+            part_number: row.querySelector("[name='part_number']").value,
+            part_description: row.querySelector("[name='part_description']").value,
+            labour_hours: parseFloat(row.querySelector("[name='labour_hours']").value),
+            quantity: row.querySelector("[name='quantity']").value
+        });
+    });
+
+    const payload = { metadata, jobs };
+
+    const response = await fetch("http://127.0.0.1:5001/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+    });
+
+    const result = await response.json();
+    alert("✅ Submitted. File saved as: " + result.saved_as);
+}
+</script>
 </body>
 </html>
