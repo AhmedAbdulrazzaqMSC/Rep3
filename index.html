@@ -37,30 +37,36 @@
     #logout { float: right; margin-bottom: 10px; }
 @media (max-width: 768px) {
   form {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr; /* stack all fields vertically */
   }
+
   .full-width {
-    grid-column: 1 / 2;
+    grid-column: 1 / 2; /* single column on small screens */
   }
+
   label, input, select, textarea, button {
     font-size: 16px;
   }
+
   button {
     width: 100%;
   }
+
   #logout {
     float: none;
     display: block;
     width: 100%;
     margin-bottom: 20px;
   }
+
   .section-title {
     font-size: 16px;
   }
 }
+
   </style>
   <script>
-        const USERS = {
+    const USERS = {
       "Admin": "admin123",
       "Brahim Moukafih": "bm123",
       "Christophe Jongenelen": "cj123",
@@ -389,6 +395,7 @@
       input.placeholder = "Alarm";
       container.appendChild(input);
     }
+
     function addJob() {
       const container = document.getElementById("jobContainer");
       const index = container.children.length + 1;
@@ -413,7 +420,7 @@
         <input type="text" name="serial_old_${index}">
         <label>New Serial Number</label>
         <input type="text" name="serial_new_${index}">
-        <input type="hidden" id="labour_${index}" name="job[${index}][labor_hours]">
+        <input type="hidden" id="labour_${index}">
       `;
 
       container.appendChild(fieldset);
@@ -427,7 +434,71 @@
       document.getElementById("partDesc_" + index).value = match?.part_description || '';
       document.getElementById("labour_" + index).value = match?.labour_hours || '';
     }
-async function submitRepair(e) {
+
+    window.onload = function () {
+      loadTechnician();
+    };
+  </script>
+</head>
+<body>
+<div id="loginSection">
+  <h2>Technician Login</h2>
+  <label>Technician Name:</label>
+  <input type="text" id="techLoginName">
+  <label>Password:</label>
+  <input type="password" id="techPassword">
+  <button onclick="doLogin()">Login</button>
+</div>
+<div id="formSection" style="display:none;">
+  <button id="logout" onclick="logout()">Logout</button>
+  <h2>Technician Repair Form</h2>
+  <form id="repairForm" onsubmit="submitRepair(event)">
+    <label>CONTAINERNR</label><input type="text" name="containernr">
+    <label>DATUM (Date)</label><input type="date" name="datum">
+    <label>NAAM (Technician Name)</label><input type="text" id="naam" name="naam">
+    <label>MODEL</label><input type="text" name="model">
+    <label>DATUM IN DIENST</label><input type="text" name="datum_in_dienst">
+    <label>SERIENR.</label><input type="text" name="serienr">
+    <label>WARRANTY ID NR</label><input type="text" name="warranty_id">
+    <label>GARANTIE</label><input type="text" name="garantie">
+    <label>SETPOINT °C</label><input type="number" name="setpoint">
+    <label>VENTS</label><input type="text" name="vents">
+    <label>HUM</label><input type="text" name="hum">
+    <label>AMBIENT</label><input type="text" name="ambient">
+    <label>SUPPLY VOOR</label><input type="text" name="supply_voor">
+    <label>SUPPLY NA</label><input type="number" name="supply_na">
+    <label>RETURN VOOR</label><input type="text" name="return_voor">
+    <label>RETURN NA</label><input type="number" name="return_na">
+
+    <div class="section-title">Photos</div>
+    <div id="fotos_voor">
+      <label>Fotos VOOR</label>
+      <input type="file" name="fotos_voor">
+    </div>
+    <button type="button" onclick="addPhoto('fotos_voor')">Add More Before Photos</button>
+
+    <div id="fotos_na">
+      <label>Fotos NA</label>
+      <input type="file" name="fotos_na">
+    </div>
+    <button type="button" onclick="addPhoto('fotos_na')">Add More After Photos</button>
+
+    <div class="section-title">Alarms</div>
+    <div class="full-width" id="alarmContainer"></div>
+    <button type="button" onclick="addAlarm()">Add Alarm</button>
+
+    <div class="section-title">Job Tasks</div>
+    <div class="full-width" id="jobContainer"></div>
+    <button type="button" onclick="addJob()">Add Job</button>
+
+    <label>TEMPERATUUR IN-RANGE NA REPAIR</label><input type="text" name="temp_in_range">
+    <label class="full-width">OMSCHRIJVING / PROBLEEM</label><textarea name="probleem" rows="3" class="full-width"></textarea>
+    <label class="full-width">OPMERKINGEN</label><textarea name="opmerkingen" rows="3" class="full-width"></textarea>
+    <button type="submit" class="full-width">Submit Report</button>
+  </form>
+</div>
+  <script>
+  async function submitRepair(e) {
     e.preventDefault();
 
     const form = document.getElementById("repairForm");
