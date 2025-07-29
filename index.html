@@ -35,6 +35,35 @@
       padding-bottom: 5px;
     }
     #logout { float: right; margin-bottom: 10px; }
+    @media (max-width: 768px) {
+  body {
+    margin: 10px;
+  }
+
+  form {
+    grid-template-columns: 1fr !important;
+  }
+
+  .full-width {
+    grid-column: 1 !important;
+  }
+
+  button, input, select, textarea {
+    font-size: 16px;
+  }
+
+  #logout {
+    float: none;
+    display: block;
+    margin-bottom: 10px;
+    text-align: right;
+  }
+
+  .section-title {
+    font-size: 16px;
+  }
+}
+
 @media (max-width: 768px) {
   form {
     grid-template-columns: 1fr; /* stack all fields vertically */
