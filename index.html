@@ -1,62 +1,394 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>REMS – Reefer Equipment Maintenance System</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 20px;
-    }
+    body { font-family: Arial, sans-serif; margin: 40px; }
     form {
+      max-width: 1000px;
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      max-width: 1000px;
-      margin: auto;
+      gap: 20px;
     }
-    label, input, select, textarea, button {
-      width: 100%;
+    label { font-weight: bold; }
+    input, select, textarea, button {
       padding: 8px;
+      width: 100%;
       box-sizing: border-box;
     }
-    .full-width {
-      grid-column: 1 / 3;
+    button:not(.full-width) {
+      width: auto;
     }
+    .full-width { grid-column: 1 / 3; }
     fieldset {
       border: 1px solid #ccc;
-      padding: 10px;
+      padding: 15px;
       margin-bottom: 10px;
     }
-    .readonly {
-      background-color: #f9f9f9;
+    .readonly { background-color: #f4f4f4; }
+    .section-title {
+      font-size: 18px;
+      margin-top: 30px;
+      grid-column: 1 / 3;
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 5px;
     }
-    @media (max-width: 768px) {
-      form {
-        grid-template-columns: 1fr;
-      }
-      .full-width {
-        grid-column: 1 / 2;
-      }
-    }
+    #logout { float: right; margin-bottom: 10px; }
+@media (max-width: 768px) {
+  form {
+    grid-template-columns: 1fr;
+  }
+  .full-width {
+    grid-column: 1 / 2;
+  }
+  label, input, select, textarea, button {
+    font-size: 16px;
+  }
+  button {
+    width: 100%;
+  }
+  #logout {
+    float: none;
+    display: block;
+    width: 100%;
+    margin-bottom: 20px;
+  }
+  .section-title {
+    font-size: 16px;
+  }
+}
   </style>
-</head>
-<body>
-  <h2>REMS – Repair Form</h2>
-  <form id="repairForm" onsubmit="submitRepair(event)">
-    <label>CONTAINERNR</label><input type="text" name="containernr">
-    <label>DATUM (Date)</label><input type="date" name="datum">
-    <label>NAAM (Technician Name)</label><input type="text" name="naam">
-    <div class="full-width" id="jobContainer"></div>
-    <button type="button" onclick="addJob()">Add Job</button>
-    <button type="submit" class="full-width">Submit Report</button>
-  </form>
-
   <script>
-    const jobData = [{"job_description": "Fan - Replace", "job_code": "A011A", "part_number": "38-00557-00", "part_description": "Fan, Evaporator", "labour_hours": 0.5}, {"job_description": "Controller - Replace", "job_code": "A018A", "part_number": "12-56012", "part_description": "Controller ML3, Green Label, Repaired", "labour_hours": 1.0}];
+        const USERS = {
+      "Admin": "admin123",
+      "Brahim Moukafih": "bm123",
+      "Christophe Jongenelen": "cj123",
+      "Hassan Ouchan": "ho123",
+      "Marc Eyckmans": "me123",
+      "Mohammed Ballafkih": "mb123",
+      "Yannick Standaert": "ys123",
+      "Youssef Stitou": "yst123"
+    };
 
+    const jobData = [
+      { job_description: "Fan - Replace", job_code: "A011A", part_number: "38-00557-00", part_description: "Fan, Evaporator", labour_hours: 0.5 },
+      { job_description: "Controller - Replace", job_code: "A018A", part_number: "12-56012", part_description: "Controller ML3, Green Label, Repaired", labour_hours: 1.0 },
+      { job_description: "Humidity Sensor - Replace", job_code: "A037A", part_number: "76-66694-00", part_description: "Sensor, Humidity W/Bracket (HS)", labour_hours: 1.25 },
+  {
+    "job_description": "Coil Assembly Condenser - Replace",
+    "job_code": "B075A",
+    "part_number": "81-04203-25",
+    "part_description": "Condenser Coil (ALU/ALU)",
+    "labour_hours": 4.0
+  },
+  {
+    "job_description": "Coil Assembly Condenser - Replace",
+    "job_code": "B075A",
+    "part_number": "69NT43-202-20PK5",
+    "part_description": "Condenser Coil, 4-Row",
+    "labour_hours": 4.0
+  },
+  {
+    "job_description": "Coil Assembly Condenser - Replace",
+    "job_code": "B075A",
+    "part_number": "81-04203-21",
+    "part_description": "Condenser Coil, Assembly (excl all related jobs)",
+    "labour_hours": 4.0
+  },
+  {
+    "job_description": "Compressor, complete (with motor) - Replace",
+    "job_code": "B064A",
+    "part_number": "18-10129-22",
+    "part_description": "COMPRESSOR, THINLINE",
+    "labour_hours": 3.25
+  },
+  {
+    "job_description": "Evaporator Fan Motor  - Replace",
+    "job_code": "A030A",
+    "part_number": "54-00742-00",
+    "part_description": "Motor, evaporator",
+    "labour_hours": 2.0
+  },
+  {
+    "job_description": "Compressor, complete (with motor) - Replace",
+    "job_code": "B064A",
+    "part_number": "18-10178-22",
+    "part_description": "COMPRESSOR SCROLL PRIMELINE",
+    "labour_hours": 2.0
+  },
+  {
+    "job_description": "Condenser fan motor capacitor - Replace",
+    "job_code": "A005A",
+    "part_number": "22-50088-02",
+    "part_description": "Capacitor, CFM, 15uF",
+    "labour_hours": 1.5
+  },
+  {
+    "job_description": "Condenser fan motor capacitor - Replace",
+    "job_code": "A005A",
+    "part_number": "22-50088-00",
+    "part_description": "Capacitor, EF, 20uF (High Speed)",
+    "labour_hours": 1.5
+  },
+  {
+    "job_description": "Humidity Sensor  - Replace",
+    "job_code": "A037A",
+    "part_number": "76-66694-00",
+    "part_description": "Sensor, Humidity W/Bracket  (HS)",
+    "labour_hours": 1.25
+  },
+  {
+    "job_description": "Controller  - Replace",
+    "job_code": "A018A",
+    "part_number": "12-56009",
+    "part_description": "Controller ML3, Yellow Label, Repaired",
+    "labour_hours": 1.0
+  },
+  {
+    "job_description": "Controller  - Replace",
+    "job_code": "A018A",
+    "part_number": "12-56012",
+    "part_description": "Controller ML3, Green Label, Repaired",
+    "labour_hours": 1.0
+  },
+  {
+    "job_description": "Circuit breaker, 460 V  - Replace",
+    "job_code": "A008A",
+    "part_number": "66U1-7842-13",
+    "part_description": "Breaker, Circuit - 460 vac, 25 Amp, (CB1)",
+    "labour_hours": 1.0
+  },
+  {
+    "job_description": "Terminal Mounting Kit Compressor - 5 kit - Replace",
+    "job_code": "B069A",
+    "part_number": "76-50210-00",
+    "part_description": "Kit, Compressor Terminal Wiring (Single Voltage)",
+    "labour_hours": 1.0
+  },
+  {
+    "job_description": "Compressor contactor   - Replace",
+    "job_code": "A013A",
+    "part_number": "10-00431-07",
+    "part_description": "Contactor, 30A",
+    "labour_hours": 0.75
+  },
+  {
+    "job_description": "Control sensor (supply air)  - Replace",
+    "job_code": "A058A",
+    "part_number": "12-00395-01SV",
+    "part_description": "Sensor, Supply, Assembly (SRS & STS)",
+    "labour_hours": 0.75
+  },
+  {
+    "job_description": "Oil charge - Replace",
+    "job_code": "B074A",
+    "part_number": "07-00292-00",
+    "part_description": "SW20 Compressor Oil, Castrol Icematic (Quart) (1 liter)",
+    "labour_hours": 0.5
+  },
+  {
+    "job_description": "Drier filter  - Replace",
+    "job_code": "B087A",
+    "part_number": "14-00464-20",
+    "part_description": "Filter Drier, with O-Rings",
+    "labour_hours": 0.5
+  },
+  {
+    "job_description": "High-pressure cut-out  - Replace",
+    "job_code": "B094A",
+    "part_number": "12-00309-06",
+    "part_description": "Switch, High Pressure (HPS)",
+    "labour_hours": 0.5
+  },
+  {
+    "job_description": "Cable, 460 V  - Replace",
+    "job_code": "A002A",
+    "part_number": "22-66651-20",
+    "part_description": "Cable MSC ContainerFlex FG7OK 4G4 11awg (per meter)",
+    "labour_hours": 0.5
+  },
+  {
+    "job_description": "Cable, 460 V  - Splice",
+    "job_code": "A002X",
+    "part_number": "22-50463-00PK50",
+    "part_description": "SPLICE KIT FAST III",
+    "labour_hours": 0.5
+  },
+  {
+    "job_description": "Cable, 460 V  - Splice",
+    "job_code": "A002X",
+    "part_number": "22-50463-00PK5",
+    "part_description": "SPLICE KIT FAST III",
+    "labour_hours": 0.5
+  },
+  {
+    "job_description": "Cable, 460 V  - Replace",
+    "job_code": "A002A",
+    "part_number": "22-66654-20",
+    "part_description": "Cable MSC ContainerFlex FG7OK 4G4 11awg (per meter)",
+    "labour_hours": 0.5
+  },
+  {
+    "job_description": "Power Plug (Complete) Male - Replace",
+    "job_code": "A001A",
+    "part_number": "22-02378-00PK10",
+    "part_description": "Plug, Power",
+    "labour_hours": 0.5
+  },
+  {
+    "job_description": "Transformer, Current Sensing - Replace",
+    "job_code": "A028A",
+    "part_number": "10-00439-00",
+    "part_description": "Transformer, Current Sensing (CS)",
+    "labour_hours": 0.5
+  },
+  {
+    "job_description": "Ambient sensor  - Replace",
+    "job_code": "A053A",
+    "part_number": "12-00495-02SV",
+    "part_description": "Sensor, Ambient / Defrost kit (AMBS / DTS)",
+    "labour_hours": 0.5
+  },
+  {
+    "job_description": "Power Plug (Complete) Male - Replace",
+    "job_code": "A001A",
+    "part_number": "818559A",
+    "part_description": "Power plug",
+    "labour_hours": 0.5
+  },
+  {
+    "job_description": "Cable, 460 V  - Replace",
+    "job_code": "A002A",
+    "part_number": "818831A",
+    "part_description": "Cable MSC ContainerFlex FG7OK 4G4 11awg (per meter)",
+    "labour_hours": 0.5
+  },
+  {
+    "job_description": "Cable, 460 V  - Splice",
+    "job_code": "A002X",
+    "part_number": "818260A",
+    "part_description": "Splice kit, AKS to NSK",
+    "labour_hours": 0.5
+  },
+  {
+    "job_description": "Fan  - Replace",
+    "job_code": "A011A",
+    "part_number": "38-00557-00",
+    "part_description": "Fan, Evaporator",
+    "labour_hours": 0.5
+  },
+  {
+    "job_description": "Evaporation  coil defrost temperature sensor - Replace",
+    "job_code": "A051A",
+    "part_number": "12-00495-02SV",
+    "part_description": "Sensor, Ambient / Defrost kit (AMBS / DTS)",
+    "labour_hours": 0.5
+  },
+  {
+    "job_description": "Transformer, Current Sensing - Replace",
+    "job_code": "A028A",
+    "part_number": "10-00439-02",
+    "part_description": "Transformer, Current Sensing (CS)",
+    "labour_hours": 0.5
+  },
+  {
+    "job_description": "Controller Key Pad  - Replace",
+    "job_code": "A039A",
+    "part_number": "79-66669-05",
+    "part_description": "Keypad Assy",
+    "labour_hours": 0.5
+  },
+  {
+    "job_description": "Temperature display  - Replace",
+    "job_code": "A029A",
+    "part_number": "12-00433-00RB",
+    "part_description": "Module, Display (Repaired)",
+    "labour_hours": 0.5
+  },
+  {
+    "job_description": "Controller Key Pad  - Replace",
+    "job_code": "A039A",
+    "part_number": "79-66669-04",
+    "part_description": "Keypad, Assembly",
+    "labour_hours": 0.5
+  },
+  {
+    "job_description": "Fuse  - Replace",
+    "job_code": "A034A",
+    "part_number": "22-02336-08",
+    "part_description": "Fuse, 7.5 Amp",
+    "labour_hours": 0.25
+  },
+  {
+    "job_description": "DataCorder Battery Pack   - Replace",
+    "job_code": "A041A",
+    "part_number": "30-50377-00",
+    "part_description": "Controller/DataCORDER Module Standard Battery Holder with Connector",
+    "labour_hours": 0.25
+  },
+  {
+    "job_description": "Valve Suction Modulation - Replace",
+    "job_code": "B123A",
+    "part_number": "14-00353-20",
+    "part_description": "Piston and Motor Assembly",
+    "labour_hours": 0.25
+  },
+  {
+    "job_description": "Service valve gasket   - Replace",
+    "job_code": "B110A",
+    "part_number": "17-10811-05",
+    "part_description": "Gasket, Service Valve (2 Bolt) (excl all related jobs)",
+    "labour_hours": 0.25
+  }
+];
+
+    function doLogin() {
+      const name = document.getElementById("techLoginName").value.trim();
+      const pass = document.getElementById("techPassword").value.trim();
+      if (USERS[name] && USERS[name] === pass) {
+        sessionStorage.setItem("technicianName", name);
+        loadTechnician();
+      } else {
+        alert("Invalid name or password.");
+      }
+    }
+
+    function loadTechnician() {
+      const name = sessionStorage.getItem("technicianName");
+      if (name) {
+        document.getElementById("naam").value = name;
+        document.getElementById("loginSection").style.display = "none";
+        document.getElementById("formSection").style.display = "block";
+        addJob();
+        addAlarm();
+      } else {
+        document.getElementById("loginSection").style.display = "block";
+        document.getElementById("formSection").style.display = "none";
+      }
+    }
+
+    function logout() {
+      sessionStorage.removeItem("technicianName");
+      location.reload();
+    }
+
+    function addPhoto(sectionId) {
+      const container = document.getElementById(sectionId);
+      const input = document.createElement("input");
+      input.type = "file";
+      input.name = sectionId + "_extra";
+      container.appendChild(input);
+    }
+
+    function addAlarm() {
+      const container = document.getElementById("alarmContainer");
+      const input = document.createElement("input");
+      input.type = "text";
+      input.name = "alarm";
+      input.placeholder = "Alarm";
+      container.appendChild(input);
+    }
     function addJob() {
       const container = document.getElementById("jobContainer");
       const index = container.children.length + 1;
@@ -67,7 +399,7 @@
       fieldset.innerHTML = `
         <legend>Job ${index}</legend>
         <label>Job Description</label>
-        <input type="text" list="${datalistId}" oninput="handleJobSelect(this, ${index})">
+        <input type="text" list="${datalistId}" oninput="handleJobSelect(this, ${index})" placeholder="Start typing...">
         <datalist id="${datalistId}">${options}</datalist>
         <label>Job Code</label>
         <input type="text" id="jobCode_${index}" class="readonly" readonly>
@@ -75,7 +407,15 @@
         <input type="text" id="partNumber_${index}" class="readonly" readonly>
         <label>Part Description</label>
         <input type="text" id="partDesc_${index}" class="readonly" readonly>
+        <label>Quantity</label>
+        <input type="text" name="quantity_${index}">
+        <label>Old Serial Number</label>
+        <input type="text" name="serial_old_${index}">
+        <label>New Serial Number</label>
+        <input type="text" name="serial_new_${index}">
+        <input type="hidden" id="labour_${index}" name="job[${index}][labor_hours]">
       `;
+
       container.appendChild(fieldset);
     }
 
@@ -85,16 +425,53 @@
       document.getElementById("jobCode_" + index).value = match?.job_code || '';
       document.getElementById("partNumber_" + index).value = match?.part_number || '';
       document.getElementById("partDesc_" + index).value = match?.part_description || '';
+      document.getElementById("labour_" + index).value = match?.labour_hours || '';
     }
+async function submitRepair(e) {
+    e.preventDefault();
 
-    function submitRepair(e) {
-      e.preventDefault();
-      alert("✅ Submitted (dummy)");
+    const form = document.getElementById("repairForm");
+    const formData = new FormData(form);
+
+    // Append alarm inputs as a single comma-separated field
+    const alarms = Array.from(document.querySelectorAll("[name='alarm']"))
+                        .map(input => input.value)
+                        .filter(Boolean);
+    formData.append("alarms", alarms.join(", "));
+
+    // Prepare and append dynamic job fields
+    const jobFieldsets = document.querySelectorAll("#jobContainer fieldset");
+    formData.append("job_count", jobFieldsets.length);
+
+    jobFieldsets.forEach((fieldset, i) => {
+      const index = i + 1;
+      formData.append(`job[${i}][description]`, fieldset.querySelector("input[list]").value);
+      formData.append(`job[${i}][code]`, document.getElementById(`jobCode_${index}`).value);
+      formData.append(`job[${i}][part_number]`, document.getElementById(`partNumber_${index}`).value);
+      formData.append(`job[${i}][part_description]`, document.getElementById(`partDesc_${index}`).value);
+      formData.append(`job[${i}][quantity]`, fieldset.querySelector(`[name='quantity_${index}']`)?.value || '');
+      formData.append(`job[${i}][old_serial]`, fieldset.querySelector(`[name='serial_old_${index}']`)?.value || '');
+      formData.append(`job[${i}][new_serial]`, fieldset.querySelector(`[name='serial_new_${index}']`)?.value || '');
+      formData.append(`job[${i}][labor_hours]`, document.getElementById(`labour_${index}`).value || '');
+    });
+
+    try {
+      const response = await fetch("http://127.0.0.1:5000/submit", {
+        method: "POST",
+        body: formData
+      });
+
+      const result = await response.json();
+      if (result.status === 'success') {
+        alert("✅ Repair report submitted successfully.");
+      } else {
+        alert("❌ Failed: " + result.message);
+      }
+    } catch (err) {
+      alert("❌ Submission error: " + err.message);
+      console.error(err);
     }
-
-    window.onload = function () {
-      addJob();
-    };
-  </script>
+  }
+</script>
 </body>
 </html>
