@@ -1,236 +1,100 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>REMS – Reefer Equipment Maintenance System</title>
   <style>
-    * {
-      box-sizing: border-box;
-    }
-
     body {
       font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background: #f5f5f5;
+      margin: 20px;
     }
-
-    header {
-      background: #003366;
-      color: white;
-      padding: 15px 20px;
-      text-align: center;
-      font-size: 20px;
-    }
-
-    main {
-      padding: 20px;
-      max-width: 1200px;
-      margin: auto;
-    }
-
     form {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 15px;
-      background: white;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      max-width: 1000px;
+      margin: auto;
     }
-
-    label {
-      font-weight: bold;
-      margin-bottom: 5px;
-      display: block;
-    }
-
-    input,
-    select,
-    textarea,
-    button {
-      padding: 8px;
+    label, input, select, textarea, button {
       width: 100%;
-      font-size: 14px;
-      margin-bottom: 10px;
+      padding: 8px;
+      box-sizing: border-box;
     }
-
-    textarea {
-      resize: vertical;
-    }
-
     .full-width {
-      grid-column: 1 / -1;
+      grid-column: 1 / 3;
     }
-
     fieldset {
       border: 1px solid #ccc;
       padding: 10px;
-      border-radius: 5px;
+      margin-bottom: 10px;
     }
-
-    legend {
-      font-weight: bold;
+    .readonly {
+      background-color: #f9f9f9;
     }
-
-    button.add-button {
-      background-color: #003366;
-      color: white;
-      border: none;
-      cursor: pointer;
-      margin-top: -5px;
-    }
-
-    button.add-button:hover {
-      background-color: #0059b3;
-    }
-
     @media (max-width: 768px) {
       form {
         grid-template-columns: 1fr;
+      }
+      .full-width {
+        grid-column: 1 / 2;
       }
     }
   </style>
 </head>
 <body>
-  <header>
-    REMS – Reefer Equipment Maintenance System
-  </header>
-  <main>
-    <form id="repairForm">
-      <label for="containernr">CONTAINERNR</label>
-      <input type="text" id="containernr" name="containernr" required>
-
-      <label for="datum">DATUM (Date)</label>
-      <input type="date" id="datum" name="datum" required>
-
-      <label for="naam">NAAM (Technician Name)</label>
-      <input type="text" id="naam" name="naam" readonly>
-
-      <label for="model">MODEL</label>
-      <input type="text" id="model" name="model">
-
-      <label for="serienr">SERIENR.</label>
-      <input type="text" id="serienr" name="serienr">
-
-      <label for="warranty_id">WARRANTY ID NR</label>
-      <input type="text" id="warranty_id" name="warranty_id">
-
-      <label for="garantie">GARANTIE</label>
-      <input type="text" id="garantie" name="garantie">
-
-      <label for="setpoint">SETPOINT °C</label>
-      <input type="number" id="setpoint" name="setpoint">
-
-      <label for="vents">VENTS</label>
-      <input type="text" id="vents" name="vents">
-
-      <label for="hum">HUM</label>
-      <input type="text" id="hum" name="hum">
-
-      <label for="ambient">AMBIENT</label>
-      <input type="text" id="ambient" name="ambient">
-
-      <label for="supply_voor">SUPPLY VOOR</label>
-      <input type="text" id="supply_voor" name="supply_voor">
-
-      <label for="supply_na">SUPPLY NA</label>
-      <input type="text" id="supply_na" name="supply_na">
-
-      <label for="return_voor">RETURN VOOR</label>
-      <input type="text" id="return_voor" name="return_voor">
-
-      <label for="return_na">RETURN NA</label>
-      <input type="text" id="return_na" name="return_na">
-
-      <label for="temp_in_range">TEMPERATUUR IN-RANGE NA REPAIR</label>
-      <input type="text" id="temp_in_range" name="temp_in_range">
-
-      <label for="probleem" class="full-width">OMSCHRIJVING / PROBLEEM</label>
-      <textarea id="probleem" name="probleem" rows="3" class="full-width"></textarea>
-
-      <label for="opmerkingen" class="full-width">OPMERKINGEN</label>
-      <textarea id="opmerkingen" name="opmerkingen" rows="3" class="full-width"></textarea>
-
-      <div class="full-width" id="photosSection">
-        <fieldset>
-          <legend>Photos</legend>
-          <div id="fotos_voor">
-            <label>Fotos VOOR</label>
-            <input type="file" name="fotos_voor">
-          </div>
-          <button type="button" onclick="addPhoto('fotos_voor')" class="add-button">Add More Before Photos</button>
-
-          <div id="fotos_na">
-            <label>Fotos NA</label>
-            <input type="file" name="fotos_na">
-          </div>
-          <button type="button" onclick="addPhoto('fotos_na')" class="add-button">Add More After Photos</button>
-        </fieldset>
-      </div>
-
-      <div class="full-width" id="alarmContainer">
-        <fieldset>
-          <legend>Alarms</legend>
-          <!-- Dynamic alarm inputs -->
-        </fieldset>
-        <button type="button" onclick="addAlarm()" class="add-button">Add Alarm</button>
-      </div>
-
-      <div class="full-width" id="jobContainer">
-        <fieldset>
-          <legend>Job Tasks</legend>
-          <!-- Dynamic job tasks -->
-        </fieldset>
-        <button type="button" onclick="addJob()" class="add-button">Add Job</button>
-      </div>
-
-      <button type="submit" class="full-width">Submit Report</button>
-    </form>
-  </main>
+  <h2>REMS – Repair Form</h2>
+  <form id="repairForm" onsubmit="submitRepair(event)">
+    <label>CONTAINERNR</label><input type="text" name="containernr">
+    <label>DATUM (Date)</label><input type="date" name="datum">
+    <label>NAAM (Technician Name)</label><input type="text" name="naam">
+    <div class="full-width" id="jobContainer"></div>
+    <button type="button" onclick="addJob()">Add Job</button>
+    <button type="submit" class="full-width">Submit Report</button>
+  </form>
 
   <script>
-    function addPhoto(sectionId) {
-      const container = document.getElementById(sectionId);
-      const input = document.createElement('input');
-      input.type = 'file';
-      input.name = sectionId + '_extra';
-      container.appendChild(input);
-    }
-
-    function addAlarm() {
-      const container = document.querySelector("#alarmContainer fieldset");
-      const input = document.createElement("input");
-      input.type = "text";
-      input.name = "alarm";
-      input.placeholder = "Alarm";
-      container.appendChild(input);
-    }
+    const jobData = [{"job_description": "Fan - Replace", "job_code": "A011A", "part_number": "38-00557-00", "part_description": "Fan, Evaporator", "labour_hours": 0.5}, {"job_description": "Controller - Replace", "job_code": "A018A", "part_number": "12-56012", "part_description": "Controller ML3, Green Label, Repaired", "labour_hours": 1.0}];
 
     function addJob() {
-      const container = document.querySelector("#jobContainer fieldset");
+      const container = document.getElementById("jobContainer");
+      const index = container.children.length + 1;
+      const datalistId = "jobList_" + index;
       const fieldset = document.createElement("fieldset");
+      const options = jobData.map(j => `<option value="${j.job_description}">`).join("");
+
       fieldset.innerHTML = `
+        <legend>Job ${index}</legend>
         <label>Job Description</label>
-        <input type="text" name="job_description[]">
+        <input type="text" list="${datalistId}" oninput="handleJobSelect(this, ${index})">
+        <datalist id="${datalistId}">${options}</datalist>
         <label>Job Code</label>
-        <input type="text" name="job_code[]">
+        <input type="text" id="jobCode_${index}" class="readonly" readonly>
         <label>Part Number</label>
-        <input type="text" name="part_number[]">
+        <input type="text" id="partNumber_${index}" class="readonly" readonly>
         <label>Part Description</label>
-        <input type="text" name="part_description[]">
-        <label>Quantity</label>
-        <input type="number" name="quantity[]">
-        <label>Old Serial Number</label>
-        <input type="text" name="serial_old[]">
-        <label>New Serial Number</label>
-        <input type="text" name="serial_new[]">
-        <label>Labor Hours</label>
-        <input type="text" name="labor_hours[]">
+        <input type="text" id="partDesc_${index}" class="readonly" readonly>
       `;
       container.appendChild(fieldset);
     }
+
+    function handleJobSelect(inputEl, index) {
+      const selected = inputEl.value;
+      const match = jobData.find(job => job.job_description === selected);
+      document.getElementById("jobCode_" + index).value = match?.job_code || '';
+      document.getElementById("partNumber_" + index).value = match?.part_number || '';
+      document.getElementById("partDesc_" + index).value = match?.part_description || '';
+    }
+
+    function submitRepair(e) {
+      e.preventDefault();
+      alert("✅ Submitted (dummy)");
+    }
+
+    window.onload = function () {
+      addJob();
+    };
   </script>
 </body>
 </html>
