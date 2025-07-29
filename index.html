@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Technician Repair Form</title>
+  <title>REMS – Reefer Equipment Maintenance System</title>
   <style>
     body { font-family: Arial, sans-serif; margin: 40px; }
     form {
@@ -35,6 +35,35 @@
       padding-bottom: 5px;
     }
     #logout { float: right; margin-bottom: 10px; }
+@media (max-width: 768px) {
+  form {
+    grid-template-columns: 1fr; /* stack all fields vertically */
+  }
+
+  .full-width {
+    grid-column: 1 / 2; /* single column on small screens */
+  }
+
+  label, input, select, textarea, button {
+    font-size: 16px;
+  }
+
+  button {
+    width: 100%;
+  }
+
+  #logout {
+    float: none;
+    display: block;
+    width: 100%;
+    margin-bottom: 20px;
+  }
+
+  .section-title {
+    font-size: 16px;
+  }
+}
+
   </style>
   <script>
     const USERS = {
@@ -431,9 +460,7 @@
     <label>DATUM IN DIENST</label><input type="text" name="datum_in_dienst">
     <label>SERIENR.</label><input type="text" name="serienr">
     <label>WARRANTY ID NR</label><input type="text" name="warranty_id">
-    <label>DATUM IN SERVICE</label><input type="text" name="datum_in_service">
     <label>GARANTIE</label><input type="text" name="garantie">
-    <label>AANTAL MAANDEN GARANTIE</label><input type="text" name="aantal_maanden">
     <label>SETPOINT °C</label><input type="number" name="setpoint">
     <label>VENTS</label><input type="text" name="vents">
     <label>HUM</label><input type="text" name="hum">
@@ -471,78 +498,51 @@
   </form>
 </div>
   <script>
-async function submitRepair(e) {
-  e.preventDefault();
+  async function submitRepair(e) {
+    e.preventDefault();
 
-  function extractFilenames(inputName) {
-    const inputs = document.querySelectorAll(`[name='${inputName}']`);
-    return Array.from(inputs).map(input => input.files[0]?.name || "").filter(Boolean);
-  }
+    const form = document.getElementById("repairForm");
+    const formData = new FormData(form);
 
-  const metadata = {
-    containernr: document.querySelector("[name='containernr']").value,
-    datum: document.querySelector("[name='datum']").value,
-    naam: document.querySelector("[name='naam']").value,
-    model: document.querySelector("[name='model']").value,
-    datum_in_dienst: document.querySelector("[name='datum_in_dienst']").value,
-    serienr: document.querySelector("[name='serienr']").value,
-    warranty_id: document.querySelector("[name='warranty_id']").value,
-    datum_in_service: document.querySelector("[name='datum_in_service']").value,
-    garantie: document.querySelector("[name='garantie']").value,
-    aantal_maanden: document.querySelector("[name='aantal_maanden']").value,
-    setpoint: document.querySelector("[name='setpoint']").value,
-    vents: document.querySelector("[name='vents']").value,
-    hum: document.querySelector("[name='hum']").value,
-    ambient: document.querySelector("[name='ambient']").value,
-    supply_voor: document.querySelector("[name='supply_voor']").value,
-    supply_na: document.querySelector("[name='supply_na']").value,
-    return_voor: document.querySelector("[name='return_voor']").value,
-    return_na: document.querySelector("[name='return_na']").value,
-    temp_in_range: document.querySelector("[name='temp_in_range']").value,
-    probleem: document.querySelector("[name='probleem']").value,
-    opmerkingen: document.querySelector("[name='opmerkingen']").value,
-    fotos_voor_names: extractFilenames("fotos_voor"),
-    fotos_na_names: extractFilenames("fotos_na")
-  };
+    // Append alarm inputs as a single comma-separated field
+    const alarms = Array.from(document.querySelectorAll("[name='alarm']"))
+                        .map(input => input.value)
+                        .filter(Boolean);
+    formData.append("alarms", alarms.join(", "));
 
-  const jobs = [];
-  const jobFieldsets = document.querySelectorAll("#jobContainer fieldset");
+    // Prepare and append dynamic job fields
+    const jobFieldsets = document.querySelectorAll("#jobContainer fieldset");
+    formData.append("job_count", jobFieldsets.length);
 
-  jobFieldsets.forEach((fieldset, i) => {
-    const index = i + 1;
-    jobs.push({
-      job_code: document.getElementById(`jobCode_${index}`).value,
-      job_description: fieldset.querySelector("input[list]").value,
-      part_number: document.getElementById(`partNumber_${index}`).value,
-      part_description: document.getElementById(`partDesc_${index}`).value,
-      labour_hours: parseFloat(document.getElementById(`labour_${index}`).value),
-      quantity: fieldset.querySelector(`[name='quantity_${index}']`)?.value || '',
-      serial_old: fieldset.querySelector(`[name='serial_old_${index}']`)?.value || '',
-      serial_new: fieldset.querySelector(`[name='serial_new_${index}']`)?.value || ''
-    });
-  });
-
-  const payload = { metadata, jobs };
-
-  try {
-    const response = await fetch("http://127.0.0.1:5001/submit", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
+    jobFieldsets.forEach((fieldset, i) => {
+      const index = i + 1;
+      formData.append(`job[${i}][description]`, fieldset.querySelector("input[list]").value);
+      formData.append(`job[${i}][code]`, document.getElementById(`jobCode_${index}`).value);
+      formData.append(`job[${i}][part_number]`, document.getElementById(`partNumber_${index}`).value);
+      formData.append(`job[${i}][part_description]`, document.getElementById(`partDesc_${index}`).value);
+      formData.append(`job[${i}][quantity]`, fieldset.querySelector(`[name='quantity_${index}']`)?.value || '');
+      formData.append(`job[${i}][old_serial]`, fieldset.querySelector(`[name='serial_old_${index}']`)?.value || '');
+      formData.append(`job[${i}][new_serial]`, fieldset.querySelector(`[name='serial_new_${index}']`)?.value || '');
+      formData.append(`job[${i}][labor_hours]`, document.getElementById(`labour_${index}`).value || '');
     });
 
-    if (!response.ok) {
-      throw new Error("Server error: " + response.status);
+    try {
+      const response = await fetch("http://127.0.0.1:5000/submit", {
+        method: "POST",
+        body: formData
+      });
+
+      const result = await response.json();
+      if (result.status === 'success') {
+        alert("✅ Repair report submitted successfully.");
+      } else {
+        alert("❌ Failed: " + result.message);
+      }
+    } catch (err) {
+      alert("❌ Submission error: " + err.message);
+      console.error(err);
     }
-
-    const result = await response.json();
-    alert("✅ Submitted. File saved as: " + result.saved_as);
-  } catch (error) {
-    alert("❌ Submission failed: " + error.message);
-    console.error(error);
   }
-}
 </script>
-
 </body>
 </html>
